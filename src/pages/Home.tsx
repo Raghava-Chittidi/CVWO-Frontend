@@ -1,69 +1,72 @@
-import BasicThreadList from "../components/BasicThreadList";
-import { authActions, authInfo } from "../store/index";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import ThreadItemList from "../components/ThreadItem/ThreadItemList";
+import SearchBar from "../components/SearchBar";
+import LoadingSpinner from "../components/LoadingSpinner";
+import NewThread from "../components/Thread/NewThread";
+import NavBar from "../components/NavBar";
+import Thread from "../components/Thread/Thread";
+import useAuthorise from "../hooks/useAuthorise";
+import React, { useState } from "react";
+import { Button, Grid } from "@mui/material";
+
+const threadTitles = [
+    "Inbox",
+    "Drafts",
+    "Trash",
+    "Spam",
+    "Inbox",
+    "Drafts",
+    "Trash",
+    "Spam",
+    "Inbox",
+    "Drafts",
+    "Trash",
+    "Spam",
+    "Inbox",
+    "Drafts",
+    "Trash",
+];
 
 const Home: React.FC = () => {
-    const TOKEN_EXPIRY_TIME = 15 * 60;
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const isLoggedIn = useSelector((state: { auth: authInfo }) => state.auth.isLoggedIn);
-    const [time, setTime] = useState<number>(TOKEN_EXPIRY_TIME);
+    const [threads, setThreads] = useState<string[]>(threadTitles);
+    const [createThread, setCreateThread] = useState<boolean>(false);
+    const loading = useAuthorise();
 
-    useEffect(() => {
-        if (!isLoggedIn || (isLoggedIn && time === 0)) {
-            const sendRequest = async () => {
-                try {
-                    const res = await axios.get(`${process.env.REACT_APP_DOMAIN_URL}/refresh`, {
-                        withCredentials: true,
-                    });
-                    const { AccessToken, RefreshToken, Email, Username } = res.data;
-                    dispatch(
-                        authActions.login({
-                            tokenPair: { access_token: AccessToken, refresh_token: RefreshToken },
-                            userData: { email: Email, username: Username },
-                        }),
-                    );
-                    setTime(TOKEN_EXPIRY_TIME);
-                } catch (err) {
-                    console.log(err);
-                }
-            };
-            sendRequest();
-        }
-
-        // Timer to check when access token expires
-        if (isLoggedIn) {
-            const i = setInterval(() => {
-                if (time > 0) {
-                    setTime((time: number) => time - 1);
-                }
-            }, 1000);
-
-            return () => clearInterval(i);
-        }
-    }, [isLoggedIn, time]);
-
-    const logoutHandler = async () => {
-        dispatch(authActions.logout());
-        try {
-            await axios.get(`${process.env.REACT_APP_DOMAIN_URL}/logout`, { withCredentials: true });
-        } catch (err) {
-            console.log(err);
-        }
+    const searchHandler = (searchInput: string) => {
+        setThreads(threadTitles.filter((thread) => thread.toLowerCase().includes(searchInput.toLowerCase())));
     };
+
+    if (loading) {
+        return <LoadingSpinner />;
+    }
 
     return (
         <>
-            <h3>
-                {"Welcome to CVWO's sample react app! Here's a basic list of forum threads for you to experiment with."}
-            </h3>
-            <br />
-            <BasicThreadList />
-            <button onClick={() => navigate("/login")}>Login</button>
-            {isLoggedIn && <button onClick={logoutHandler}>Logout</button>}
+            <NavBar />
+            <Grid container spacing={0}>
+                <Grid item xs={3}>
+                    <Button
+                        variant="contained"
+                        sx={{
+                            width: "100%",
+                            backgroundColor: "purple",
+                            opacity: 0.8,
+                            borderRadius: 0,
+                            textTransform: "none",
+                            fontSize: 15,
+                            ":hover": { backgroundColor: "purple", opacity: 0.9 },
+                        }}
+                        onClick={() => setCreateThread(true)}
+                    >
+                        Create Thread
+                    </Button>
+                    <SearchBar searchHandler={searchHandler} />
+                    <ThreadItemList threadTitles={threads} />
+                </Grid>
+
+                <Grid item xs={9} sx={{ overflowY: "scroll", maxHeight: "93vh" }}>
+                    {createThread ? <NewThread setCreateThread={setCreateThread} /> : <Thread />}
+                </Grid>
+            </Grid>
         </>
     );
 };

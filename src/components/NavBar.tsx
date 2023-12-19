@@ -1,4 +1,4 @@
-import { authInfo } from "../store";
+import { authActions, authInfo } from "../store";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -12,18 +12,20 @@ import MenuItem from "@mui/material/MenuItem";
 // import AdbIcon from "@mui/icons-material/Adb";
 import ForumIcon from "@mui/icons-material/Forum";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as React from "react";
 import { Link } from "@mui/material";
+import axios from "axios";
 
 // const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Logout"];
 
-function ResponsiveAppBar() {
+const NavBar = () => {
     // const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const isLoggedIn = useSelector((state: { auth: authInfo }) => state.auth.isLoggedIn);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     // const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     //     setAnchorElNav(event.currentTarget);
@@ -36,12 +38,21 @@ function ResponsiveAppBar() {
     //     setAnchorElNav(null);
     // };
 
+    const logoutHandler = async () => {
+        dispatch(authActions.logout());
+        try {
+            await axios.get(`${process.env.REACT_APP_DOMAIN_URL}/logout`, { withCredentials: true });
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
 
     return (
-        <AppBar position="static">
+        <AppBar position="static" sx={{ backgroundColor: "#0471A6" }}>
             <Container maxWidth="xl">
                 <Toolbar disableGutters sx={{ display: "flex", justifyContent: "space-between" }}>
                     <Box
@@ -158,7 +169,12 @@ function ResponsiveAppBar() {
                                 >
                                     {settings.map((setting) => (
                                         <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                            <Typography textAlign="center">{setting}</Typography>
+                                            <Typography
+                                                textAlign="center"
+                                                onClick={setting === "Logout" ? logoutHandler : () => {}}
+                                            >
+                                                {setting}
+                                            </Typography>
                                         </MenuItem>
                                     ))}
                                 </Menu>
@@ -178,5 +194,5 @@ function ResponsiveAppBar() {
             </Container>
         </AppBar>
     );
-}
-export default ResponsiveAppBar;
+};
+export default NavBar;

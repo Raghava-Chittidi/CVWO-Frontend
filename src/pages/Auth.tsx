@@ -1,3 +1,6 @@
+import useAuthorise from "../hooks/useAuthorise";
+import NavBar from "../components/NavBar";
+import LoadingSpinner from "../components/LoadingSpinner";
 import { authActions, authInfo } from "../store/index";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "@mui/material/Button";
@@ -8,7 +11,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Alert, CircularProgress, Link } from "@mui/material";
+import { Alert, Link } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -20,14 +23,15 @@ export default function Auth() {
     const navigate = useNavigate();
     const isLoggedIn = useSelector((state: { auth: authInfo }) => state.auth.isLoggedIn);
     const [isLoginState, setIsLoginState] = useState<boolean>(true);
-    const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
+    const [loading1, setLoading1] = useState<boolean>(true);
+    const loading2 = useAuthorise();
 
     useEffect(() => {
         if (isLoggedIn) {
             navigate("/", { replace: true });
         } else {
-            setLoading(false);
+            setLoading1(false);
         }
     }, [isLoggedIn]);
 
@@ -74,88 +78,85 @@ export default function Auth() {
         }
     };
 
-    if (loading) {
-        return (
-            <Box
-                sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    minHeight: "100vh",
-                }}
-            >
-                <CircularProgress />
-            </Box>
-        );
+    if (loading1 || loading2) {
+        return <LoadingSpinner />;
     }
 
     return (
-        <ThemeProvider theme={defaultTheme}>
-            <Container component="main">
-                <CssBaseline />
-                <Box
-                    maxWidth={475}
-                    sx={{
-                        position: "fixed",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translateX(-50%) translateY(-50%)",
-                    }}
-                >
-                    <Typography component="h1" variant="h4">
-                        {isLoginState ? "Login" : "Sign Up"}
-                    </Typography>
-                    {error && (
-                        <Alert severity="error" sx={{ mt: 1 }}>
-                            {error}
-                        </Alert>
-                    )}
-                    <Box component="form" onSubmit={submitHandler} noValidate sx={{ mt: 1 }}>
-                        {!isLoginState && (
+        <>
+            <NavBar />
+            <ThemeProvider theme={defaultTheme}>
+                <Container component="main">
+                    <CssBaseline />
+                    <Box
+                        maxWidth={475}
+                        sx={{
+                            position: "fixed",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translateX(-50%) translateY(-50%)",
+                        }}
+                    >
+                        <Typography component="h1" variant="h4" sx={{ textAlign: "center" }}>
+                            {isLoginState ? "Login" : "Sign Up"}
+                        </Typography>
+                        {error && (
+                            <Alert severity="error" sx={{ mt: 1 }}>
+                                {error}
+                            </Alert>
+                        )}
+                        <Box component="form" onSubmit={submitHandler} noValidate sx={{ mt: 1 }}>
+                            {!isLoginState && (
+                                <TextField
+                                    margin="normal"
+                                    required
+                                    fullWidth
+                                    id="username"
+                                    label="Username"
+                                    name="username"
+                                    autoComplete="off"
+                                    autoFocus
+                                />
+                            )}
                             <TextField
                                 margin="normal"
                                 required
                                 fullWidth
-                                id="username"
-                                label="Username"
-                                name="username"
-                                autoComplete="off"
-                                autoFocus
+                                name="email"
+                                label="Email Address"
+                                type="email"
+                                id="email"
                             />
-                        )}
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="email"
-                            label="Email Address"
-                            type="email"
-                            id="email"
-                        />
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                        />
-                        <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-                            {isLoginState ? "Login" : "Sign Up"}
-                        </Button>
-                        <Grid container sx={{ display: "flex", justifyContent: "center" }}>
-                            <Grid item>
-                                <Link onClick={switchAuthStateHandler} sx={{ cursor: "pointer" }}>
-                                    {isLoginState
-                                        ? "Don't have an account? Sign Up"
-                                        : "Already have an account? Login here"}
-                                </Link>
+                            <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="password"
+                                label="Password"
+                                type="password"
+                                id="password"
+                            />
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                sx={{ mt: 3, mb: 2, textTransform: "none", fontSize: 18 }}
+                            >
+                                {isLoginState ? "Login" : "Sign Up"}
+                            </Button>
+                            <Grid container sx={{ display: "flex", justifyContent: "center" }}>
+                                <Grid item>
+                                    <Link onClick={switchAuthStateHandler} sx={{ cursor: "pointer" }}>
+                                        {isLoginState
+                                            ? "Don't have an account? Sign Up"
+                                            : "Already have an account? Login here"}
+                                    </Link>
+                                </Grid>
                             </Grid>
-                        </Grid>
+                        </Box>
                     </Box>
-                </Box>
-            </Container>
-        </ThemeProvider>
+                </Container>
+            </ThemeProvider>
+        </>
     );
 }
