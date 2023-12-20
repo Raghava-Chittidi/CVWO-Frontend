@@ -1,3 +1,4 @@
+import { selectorStateType } from "../../types/types";
 import TextArea from "../TextArea";
 import Select from "../Select";
 import Button from "@mui/material/Button";
@@ -7,16 +8,61 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import React from "react";
+import { SelectChangeEvent } from "@mui/material/Select"; // eslint-disable-line
+import React, { useState } from "react";
+import axios from "axios";
+import { useSelector } from "react-redux";
+
+type NewThreadProps = {
+    setCreateThread: React.Dispatch<React.SetStateAction<boolean>>;
+    categories: string[];
+};
 
 const defaultTheme = createTheme();
 
-const categories = ["General", "Movies", "Education", "Music", "Environment"];
+const NewThread = (props: NewThreadProps) => {
+    const categories = ["General", ...props.categories.filter((category: string) => category !== "General")];
+    const [category, setCategory] = useState<string>(categories[0]);
+    const [title, setTitle] = useState<string>("");
+    const [imageUrl, setImageUrl] = useState<string>("");
+    const [content, setContent] = useState<string>("");
+    const username = useSelector((state: selectorStateType) => state.auth.userData?.username);
 
-const NewThread = ({ setCreateThread }: { setCreateThread: React.Dispatch<React.SetStateAction<boolean>> }) => {
-    const submitHandler = (event: React.FormEvent) => {
+    const changeHandler = (event: SelectChangeEvent) => {
+        setCategory(event.target.value);
+    };
+
+    const titleBlurHandler = (event: React.FocusEvent<HTMLInputElement>) => {
+        setTitle(event.target.value);
+    };
+
+    const imageUrlBlurHandler = (event: React.FocusEvent<HTMLInputElement>) => {
+        setImageUrl(event.target.value);
+    };
+
+    const contentBlurHandler = (event: React.FocusEvent<HTMLTextAreaElement>) => {
+        setContent(event.target.value);
+    };
+
+    const submitHandler = async (event: React.FormEvent) => {
         event.preventDefault();
-        setCreateThread(false);
+        try {
+            const res = await axios.post(`${process.env.REACT_APP_DOMAIN_URL}/createThread`, {
+                title,
+                content,
+                category,
+                imageUrl,
+                username,
+            });
+            console.log(res.data.message);
+            setCategory(categories[0]);
+            setTitle("");
+            setContent("");
+            setImageUrl("");
+            props.setCreateThread(false);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -33,7 +79,7 @@ const NewThread = ({ setCreateThread }: { setCreateThread: React.Dispatch<React.
                         </Alert>
                     )} */}
                     <Box component="form" onSubmit={submitHandler} noValidate sx={{ mt: 1 }}>
-                        <Select options={categories} />
+                        <Select option={category} options={categories} changeHandler={changeHandler} />
                         <TextField
                             margin="normal"
                             required
@@ -42,18 +88,24 @@ const NewThread = ({ setCreateThread }: { setCreateThread: React.Dispatch<React.
                             label="Title"
                             name="title"
                             autoComplete="off"
+                            onBlur={titleBlurHandler}
                         />
                         <TextField
                             margin="normal"
-                            required
                             fullWidth
                             name="imageUrl"
                             label="ImageUrl"
                             type="imageUrl"
                             id="imageUrl"
+                            onBlur={imageUrlBlurHandler}
                         />
                         <Box sx={{ mt: 2, fontSize: 20 }}>
-                            <TextArea minHeight="8rem" maxHeight="15rem" placeholder="Description" />
+                            <TextArea
+                                minHeight="8rem"
+                                maxHeight="15rem"
+                                placeholder="Description"
+                                blurHandler={contentBlurHandler}
+                            />
                         </Box>
 
                         <Button

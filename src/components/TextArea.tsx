@@ -54,20 +54,28 @@ const TextareaAutosize = styled(BaseTextareaAutosize)(
 `,
 );
 
-const TextArea = ({
-    minHeight,
-    maxHeight,
-    placeholder,
-}: {
+type TextAreaProps = {
     minHeight: string;
     maxHeight: string;
     placeholder: string;
-}) => {
+    blurHandler?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
+};
+
+const TextArea = (props: TextAreaProps) => {
     return (
         <TextareaAutosize
             aria-multiline
-            sx={{ resize: "vertical", width: "100%", minHeight, maxHeight, fontSize: 16, borderRadius: 1 }}
-            placeholder={placeholder}
+            sx={{
+                resize: "vertical",
+                width: "100%",
+                minHeight: props.minHeight,
+                maxHeight: props.maxHeight,
+                fontSize: 16,
+                borderRadius: 1,
+            }}
+            required
+            placeholder={props.placeholder + " *"}
+            onBlur={props.blurHandler}
         />
     );
 };

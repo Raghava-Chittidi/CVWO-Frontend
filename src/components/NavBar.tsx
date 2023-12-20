@@ -1,4 +1,5 @@
-import { authActions, authInfo } from "../store";
+import { selectorStateType } from "../types/types";
+import { authActions } from "../store";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -22,7 +23,7 @@ const settings = ["Profile", "Logout"];
 
 const NavBar = () => {
     // const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-    const isLoggedIn = useSelector((state: { auth: authInfo }) => state.auth.isLoggedIn);
+    const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const navigate = useNavigate();
     const dispatch = useDispatch();

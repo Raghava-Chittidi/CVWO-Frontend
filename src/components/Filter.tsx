@@ -4,20 +4,8 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select"; // eslint-disable-line
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 
-const categories = [
-    "All",
-    "Education",
-    "Finance",
-    "Healthcare",
-    "Politics",
-    "Environment",
-    "General",
-    "Music",
-    "Movies",
-];
-
-const Filter = () => {
-    const [category, setCategory] = React.useState<string>(categories[0]);
+const Filter = ({ categories }: { categories: string[] }) => {
+    const [category, setCategory] = React.useState<string | null>(categories[0]);
     const [open, setOpen] = React.useState(false);
 
     const handleChange = (event: React.MouseEvent) => {
@@ -51,7 +39,7 @@ const Filter = () => {
                     defaultValue={categories[0]}
                     sx={{ visibility: "hidden", position: "absolute", bottom: 0, left: "1.5rem", fontSize: 0 }}
                 >
-                    {categories.map((category) => (
+                    {categories.map((category: string) => (
                         <MenuItem key={category} value={category} id={category} onClick={handleChange}>
                             {category}
                         </MenuItem>

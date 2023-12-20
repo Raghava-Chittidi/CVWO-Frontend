@@ -17,7 +17,12 @@ const ThreadItem = ({ title, category, author, createdAt }: threadItemProps) => 
             }}
         >
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Typography variant="body1">{title}</Typography>
+                <Typography
+                    variant="body1"
+                    sx={{ textOverflow: "ellipsis", whiteSpace: "nowrap", overflow: "hidden", maxWidth: "70%" }}
+                >
+                    {title}
+                </Typography>
                 <StarIcon sx={{ color: "lightgray", width: "0.8rem" }} />
             </Box>
 

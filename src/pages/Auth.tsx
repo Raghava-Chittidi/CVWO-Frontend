@@ -1,7 +1,8 @@
+import { selectorStateType } from "../types/types";
 import useAuthorise from "../hooks/useAuthorise";
 import NavBar from "../components/NavBar";
 import LoadingSpinner from "../components/LoadingSpinner";
-import { authActions, authInfo } from "../store/index";
+import { authActions } from "../store/index";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -21,7 +22,7 @@ const defaultTheme = createTheme();
 export default function Auth() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const isLoggedIn = useSelector((state: { auth: authInfo }) => state.auth.isLoggedIn);
+    const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
     const [isLoginState, setIsLoginState] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
     const [loading1, setLoading1] = useState<boolean>(true);

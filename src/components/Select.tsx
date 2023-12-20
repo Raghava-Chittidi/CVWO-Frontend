@@ -5,19 +5,19 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import MUISelect, { SelectChangeEvent } from "@mui/material/Select"; // eslint-disable-line
 
-const Select = ({ options }: { options: string[] }) => {
-    const [option, setOption] = React.useState(options[0]);
+type SelectProps = {
+    options: string[];
+    option: string;
+    changeHandler: (event: SelectChangeEvent) => void;
+};
 
-    const changeHandler = (event: SelectChangeEvent) => {
-        setOption(event.target.value as string);
-    };
-
+const Select = (props: SelectProps) => {
     return (
         <Box sx={{ mt: 2 }}>
             <FormControl fullWidth>
                 <InputLabel>Category</InputLabel>
-                <MUISelect value={option} label="Category" onChange={changeHandler}>
-                    {options.map((option) => (
+                <MUISelect value={props.option} label="Category" onChange={props.changeHandler}>
+                    {props.options.map((option) => (
                         <MenuItem key={option} value={option}>
                             {option}
                         </MenuItem>

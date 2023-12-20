@@ -5,9 +5,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 const useAuthorise = () => {
-    const TOKEN_EXPIRY_TIME = 15 * 60 * 1000;
+    const TOKEN_EXPIRY_TIME = 15 * 60;
     const dispatch = useDispatch();
     const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
+    const [time, setTime] = useState<number>(TOKEN_EXPIRY_TIME);
     const [loading, setLoading] = useState<boolean>(true);
 
     const sendRequest = async () => {
@@ -23,6 +24,7 @@ const useAuthorise = () => {
                     userData: { email: Email, username: Username },
                 }),
             );
+            setTime(TOKEN_EXPIRY_TIME);
             setLoading(false);
         } catch (err) {
             setLoading(false);
@@ -31,20 +33,24 @@ const useAuthorise = () => {
     };
 
     useEffect(() => {
-        if (!isLoggedIn) {
+        if (!isLoggedIn || (isLoggedIn && time === 0)) {
             sendRequest();
         }
 
         // Timer to check when access token expires
-        else {
+        if (isLoggedIn) {
             const i = setInterval(() => {
-                sendRequest();
-            }, TOKEN_EXPIRY_TIME);
+                if (time > 0) {
+                    // console.log("this issue");
+
+                    setTime((time: number) => time - 1);
+                }
+            }, 1000);
 
             setLoading(false);
             return () => clearInterval(i);
         }
-    }, [isLoggedIn]);
+    }, [isLoggedIn, time]);
 
     return loading;
 };

@@ -1,5 +1,5 @@
 import CommentItem from "./CommentItem";
-import Comment from "../../types/Comment";
+import { CommentType } from "../../types/types";
 
 import React from "react";
 import { Box } from "@mui/system";
@@ -10,7 +10,7 @@ import { Typography } from "@mui/material";
 // };
 
 const CommentList: React.FC = () => {
-    const comments: Comment[] = [
+    const comments: CommentType[] = [
         {
             body: `Any fool can write code that a computer can understand 
                 Good programmers write code that humans can understand ~ Martin Fowler
