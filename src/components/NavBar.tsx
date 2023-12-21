@@ -71,7 +71,7 @@ const NavBar = () => {
                                 fontFamily: "monospace",
                                 fontWeight: 700,
                                 letterSpacing: ".3rem",
-                                color: "inherit",
+                                // color: "#00d5fa",
                                 textDecoration: "none",
                             }}
                         >

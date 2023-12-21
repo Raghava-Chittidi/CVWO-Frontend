@@ -13,6 +13,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { Alert } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 type NewThreadProps = {
     setCreateThread: React.Dispatch<React.SetStateAction<boolean>>;
@@ -29,6 +30,7 @@ const NewThread = (props: NewThreadProps) => {
     const [content, setContent] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
     const username = useSelector((state: selectorStateType) => state.auth.userData?.username);
+    const navigate = useNavigate();
 
     const changeHandler = (event: SelectChangeEvent) => {
         setCategory(event.target.value);
@@ -69,6 +71,7 @@ const NewThread = (props: NewThreadProps) => {
             setImageUrl("");
             setError(null);
             props.setCreateThread(false);
+            navigate(0);
         } catch (error) {
             setError(error.response.data.message);
             console.log(error);

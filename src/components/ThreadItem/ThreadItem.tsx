@@ -47,13 +47,13 @@ const ThreadItem = (props: threadItemProps) => {
             </Box>
 
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Grid container>
-                    <Grid item xs={4}>
+                <Grid container gap={2}>
+                    <Grid item xs={3}>
                         <Typography variant="caption" sx={{ color: "purple", fontWeight: 600 }}>
                             {props.threadItem.category.name}
                         </Typography>
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid item xs={3}>
                         <Typography variant="caption">{props.threadItem.user.username}</Typography>
                     </Grid>
                     <Grid item xs={1}>
