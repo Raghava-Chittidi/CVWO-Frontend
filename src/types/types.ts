@@ -1,31 +1,24 @@
 import { authInfo } from "../store";
 
-export type CommentType = {
-    body: string;
-    author: string;
-    timestamp: Date;
-};
-
 export type UserType = {
     ID: number;
     email: string;
     username: string;
-    password: string;
     imageUrl?: string;
+    comments: null;
+    threads: null;
     CreatedAt: string;
     UpdatedAt: string;
     DeletedAt: null;
-    comments: null;
-    threads: null;
 };
 
 export type CategoryType = {
     ID: number;
     name: string;
+    threads: null;
     CreatedAt: string;
     UpdatedAt: string;
     DeletedAt: null;
-    threads: null;
 };
 
 export type ThreadType = {
@@ -37,10 +30,21 @@ export type ThreadType = {
     user: UserType;
     categoryId: number;
     category: CategoryType;
+    comments: CommentType[];
     CreatedAt: string;
     UpdatedAt: string;
     DeletedAt: null;
-    comments: null;
 };
 
-export type selectorStateType = { auth: authInfo };
+export type CommentType = {
+    ID: number;
+    content: string;
+    threadId: number;
+    userId: number;
+    user: UserType;
+    CreatedAt: string;
+    UpdatedAt: string;
+    DeletedAt: null;
+};
+
+export type selectorStateType = { auth: authInfo; thread: { currentThread: ThreadType } };

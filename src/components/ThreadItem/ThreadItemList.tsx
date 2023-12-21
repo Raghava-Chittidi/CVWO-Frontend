@@ -64,12 +64,7 @@ const ThreadItemList = (props: ThreadItemListProps) => {
                             onClick={(event) => handleListItemClick(event, index)}
                             sx={{ borderRadius: 1 }}
                         >
-                            <ThreadItem
-                                title={threadItem.title}
-                                author={threadItem.user.username}
-                                category={threadItem.category.name}
-                                createdAt="1w"
-                            />
+                            <ThreadItem threadItem={threadItem} setCreateThread={props.setCreateThread} />
                         </ListItemButton>
                         <Divider sx={{ width: "98%", color: "lightgray", m: "auto" }} />
                     </Box>

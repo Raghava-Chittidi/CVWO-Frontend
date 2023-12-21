@@ -1,11 +1,16 @@
 import ThreadHeader from "./ThreadHeader";
+import { ThreadType } from "../../types/types";
 import NewComment from "../Comment/NewComment";
 import React from "react";
 import Typography from "@mui/material/Typography";
 import { Box } from "@mui/material";
 import { purple } from "@mui/material/colors";
 
-const ThreadPost = () => {
+const ThreadPost = ({ thread }: { thread: ThreadType }) => {
+    if (!thread) {
+        return <Box>Select a thread!</Box>;
+    }
+
     return (
         <Box
             sx={{
@@ -18,23 +23,15 @@ const ThreadPost = () => {
             }}
         >
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-                <Typography variant="h4">Finals 23/24 q19,20</Typography>
+                <Typography variant="h4">{thread.title}</Typography>
                 <Typography variant="h6" color={purple[700]}>
-                    Education
+                    {thread.category.name}
                 </Typography>
-                {/* <Button variant="contained" sx={{ backgroundColor: "purple", maxWidth: 90 }}>
-                    Education
-                </Button> */}
             </Box>
-            <ThreadHeader />
-            <img
-                style={{ maxWidth: "100%" }}
-                src="https://images.unsplash.com/photo-1682685797140-c17807f8f217?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxMXx8fGVufDB8fHx8fA%3D%3D"
-                alt=""
-            />
+            <ThreadHeader username={thread.user.username} date={thread.CreatedAt} />
+            <img style={{ maxWidth: "100%" }} src={thread.imageUrl} alt={thread.title} />
             <Typography variant="body2" color="text.secondary" sx={{ textAlign: "left", mt: 2 }}>
-                This impressive paella is a perfect party dish and a fun meal to cook together with your guests. Add 1
-                cup of frozen peas along with the mussels, if you like.
+                {thread.content}
             </Typography>
             <NewComment />
         </Box>

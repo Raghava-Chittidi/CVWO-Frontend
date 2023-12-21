@@ -12,6 +12,7 @@ import { SelectChangeEvent } from "@mui/material/Select"; // eslint-disable-line
 import React, { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { Alert } from "@mui/material";
 
 type NewThreadProps = {
     setCreateThread: React.Dispatch<React.SetStateAction<boolean>>;
@@ -26,6 +27,7 @@ const NewThread = (props: NewThreadProps) => {
     const [title, setTitle] = useState<string>("");
     const [imageUrl, setImageUrl] = useState<string>("");
     const [content, setContent] = useState<string>("");
+    const [error, setError] = useState<string | null>(null);
     const username = useSelector((state: selectorStateType) => state.auth.userData?.username);
 
     const changeHandler = (event: SelectChangeEvent) => {
@@ -47,20 +49,28 @@ const NewThread = (props: NewThreadProps) => {
     const submitHandler = async (event: React.FormEvent) => {
         event.preventDefault();
         try {
-            const res = await axios.post(`${process.env.REACT_APP_DOMAIN_URL}/createThread`, {
-                title,
-                content,
-                category,
-                imageUrl,
-                username,
-            });
+            const res = await axios.post(
+                `${process.env.REACT_APP_DOMAIN_URL}/createThread`,
+                {
+                    title,
+                    content,
+                    category,
+                    imageUrl,
+                    username,
+                },
+                { withCredentials: true },
+            );
+
+            // Add success notif
             console.log(res.data.message);
             setCategory(categories[0]);
             setTitle("");
             setContent("");
             setImageUrl("");
+            setError(null);
             props.setCreateThread(false);
         } catch (error) {
+            setError(error.response.data.message);
             console.log(error);
         }
     };
@@ -73,11 +83,11 @@ const NewThread = (props: NewThreadProps) => {
                     <Typography component="h1" variant="h4">
                         Create Thread
                     </Typography>
-                    {/* {error && (
+                    {error && (
                         <Alert severity="error" sx={{ mt: 1 }}>
                             {error}
                         </Alert>
-                    )} */}
+                    )}
                     <Box component="form" onSubmit={submitHandler} noValidate sx={{ mt: 1 }}>
                         <Select option={category} options={categories} changeHandler={changeHandler} />
                         <TextField
@@ -103,7 +113,7 @@ const NewThread = (props: NewThreadProps) => {
                             <TextArea
                                 minHeight="8rem"
                                 maxHeight="15rem"
-                                placeholder="Description"
+                                placeholder="Content"
                                 blurHandler={contentBlurHandler}
                             />
                         </Box>

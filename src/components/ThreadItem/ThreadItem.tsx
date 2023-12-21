@@ -1,13 +1,33 @@
-import { Box, Typography } from "@mui/material";
+import { ThreadType } from "../../types/types";
+import LoadingSpinner from "../LoadingSpinner";
+import { threadActions } from "../../store";
+import { useDispatch } from "react-redux";
+import { Box, Grid, Typography } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
-import * as React from "react";
+import React, { useState } from "react";
 
-type threadItemProps = { title: string; category: string; author: string; createdAt: string };
+type threadItemProps = {
+    threadItem: ThreadType;
+    setCreateThread: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-const ThreadItem = ({ title, category, author, createdAt }: threadItemProps) => {
+const ThreadItem = (props: threadItemProps) => {
+    const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
+
+    if (loading) {
+        return <LoadingSpinner />;
+    }
+
     return (
         <Box
+            onClick={() => {
+                setLoading(true);
+                props.setCreateThread(false);
+                dispatch(threadActions.setCurrent({ currentThread: props.threadItem }));
+                setLoading(false);
+            }}
             sx={{
                 display: "flex",
                 flexDirection: "column",
@@ -21,19 +41,25 @@ const ThreadItem = ({ title, category, author, createdAt }: threadItemProps) => 
                     variant="body1"
                     sx={{ textOverflow: "ellipsis", whiteSpace: "nowrap", overflow: "hidden", maxWidth: "70%" }}
                 >
-                    {title}
+                    {props.threadItem.title}
                 </Typography>
                 <StarIcon sx={{ color: "lightgray", width: "0.8rem" }} />
             </Box>
 
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                <Box sx={{ display: "flex", justifyContent: "space-between", width: "55%" }}>
-                    <Typography variant="caption" sx={{ color: "purple", fontWeight: 600 }}>
-                        {category}
-                    </Typography>
-                    <Typography variant="caption">{author}</Typography>
-                    <Typography variant="caption">{createdAt}</Typography>
-                </Box>
+                <Grid container>
+                    <Grid item xs={4}>
+                        <Typography variant="caption" sx={{ color: "purple", fontWeight: 600 }}>
+                            {props.threadItem.category.name}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Typography variant="caption">{props.threadItem.user.username}</Typography>
+                    </Grid>
+                    <Grid item xs={1}>
+                        <Typography variant="caption">{"1w"}</Typography>
+                    </Grid>
+                </Grid>
                 <FavoriteOutlinedIcon sx={{ color: "lightgray", width: "0.8rem" }} />
             </Box>
         </Box>

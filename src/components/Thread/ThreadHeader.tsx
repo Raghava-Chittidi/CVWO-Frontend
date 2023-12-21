@@ -3,12 +3,17 @@ import AvatarHeader from "../AvatarHeader";
 import { Box } from "@mui/system";
 import React from "react";
 
-const ThreadHeader = () => {
+type ThreadHeaderProps = {
+    username: string;
+    date: string;
+};
+
+const ThreadHeader = (props: ThreadHeaderProps) => {
     return (
         <Box
             sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 2, mb: 2, width: "100%" }}
         >
-            <AvatarHeader />
+            <AvatarHeader {...props} />
             <ThreadHeaderIcons />
         </Box>
     );
