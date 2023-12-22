@@ -7,14 +7,15 @@ import ListItemButton from "@mui/material/ListItemButton";
 import Divider from "@mui/material/Divider";
 import { Link, Typography } from "@mui/material";
 import { blue } from "@mui/material/colors";
+import { useNavigate } from "react-router-dom";
 
 type ThreadItemListProps = {
     threadItems: ThreadType[];
-    setCreateThread: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const ThreadItemList = (props: ThreadItemListProps) => {
+const ThreadItemList = React.memo(function threadItemList(props: ThreadItemListProps) {
     const [selectedId, setSelectedId] = useState<number | null>(null);
+    const navigate = useNavigate();
 
     const handleListItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, id: number) => {
         setSelectedId(id);
@@ -23,8 +24,6 @@ const ThreadItemList = (props: ThreadItemListProps) => {
     return (
         <Box
             sx={{
-                width: "100%",
-                maxHeight: "82vh",
                 bgcolor: "background.paper",
                 overflowY: "scroll",
                 border: 1,
@@ -36,7 +35,6 @@ const ThreadItemList = (props: ThreadItemListProps) => {
                 {props.threadItems.length === 0 && (
                     <Box
                         sx={{
-                            height: "80vh",
                             display: "flex",
                             flexDirection: "column",
                             justifyContent: "center",
@@ -45,7 +43,7 @@ const ThreadItemList = (props: ThreadItemListProps) => {
                     >
                         <Typography variant="h4">No threads</Typography>
                         <Link
-                            onClick={() => props.setCreateThread(true)}
+                            onClick={() => navigate("/threads/create")}
                             variant="h4"
                             sx={{
                                 cursor: "pointer",
@@ -58,14 +56,16 @@ const ThreadItemList = (props: ThreadItemListProps) => {
                     </Box>
                 )}
                 <Box sx={{ height: "80vh" }}>
-                    {props.threadItems.map((threadItem, index) => (
-                        <Box key={index} sx={{ marginLeft: 0.5, marginRight: 0.5 }}>
+                    {props.threadItems.map((threadItem) => (
+                        <Box key={threadItem.ID} sx={{ marginLeft: 0.5, marginRight: 0.5 }}>
                             <ListItemButton
                                 selected={selectedId === threadItem.ID}
-                                onClick={(event) => handleListItemClick(event, threadItem.ID)}
+                                onClick={(event) => {
+                                    handleListItemClick(event, threadItem.ID);
+                                }}
                                 sx={{ borderRadius: 1 }}
                             >
-                                <ThreadItem threadItem={threadItem} setCreateThread={props.setCreateThread} />
+                                <ThreadItem threadItem={threadItem} />
                             </ListItemButton>
                             <Divider sx={{ width: "98%", color: "lightgray", m: "auto" }} />
                         </Box>
@@ -74,6 +74,6 @@ const ThreadItemList = (props: ThreadItemListProps) => {
             </List>
         </Box>
     );
-};
+});
 
 export default ThreadItemList;

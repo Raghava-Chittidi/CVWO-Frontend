@@ -1,29 +1,13 @@
 import ThreadHeader from "./ThreadHeader";
 import { ThreadType } from "../../types/types";
 import NewComment from "../Comment/NewComment";
+import CommentList from "../Comment/CommentList";
 import React from "react";
 import Typography from "@mui/material/Typography";
-import { Box } from "@mui/material";
+import { Box, Fade } from "@mui/material";
 import { purple } from "@mui/material/colors";
-import ForumIcon from "@mui/icons-material/Forum";
 
 const ThreadPost = ({ thread }: { thread: ThreadType }) => {
-    if (!thread) {
-        return (
-            <Box
-                sx={{
-                    height: "93vh",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                }}
-            >
-                <ForumIcon sx={{ color: "lightgray", fontSize: 100, mr: 2 }} />
-                <Typography variant="h3">Select a thread!</Typography>
-            </Box>
-        );
-    }
-
     return (
         <Box
             sx={{
@@ -34,6 +18,7 @@ const ThreadPost = ({ thread }: { thread: ThreadType }) => {
                 m: "auto",
                 mt: 2,
             }}
+            key={thread.ID}
         >
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", width: "100%" }}>
                 <Typography variant="h4" sx={{ maxWidth: "80%" }}>
@@ -44,11 +29,16 @@ const ThreadPost = ({ thread }: { thread: ThreadType }) => {
                 </Typography>
             </Box>
             <ThreadHeader username={thread.user.username} date={thread.CreatedAt} />
-            <img style={{ maxWidth: "100%" }} src={thread.imageUrl} alt={thread.title} />
+            {thread.imageUrl && (
+                <Fade in timeout={500}>
+                    <img style={{ maxWidth: "100%", marginTop: "1rem" }} src={thread.imageUrl} alt={thread.title} />
+                </Fade>
+            )}
             <Typography variant="body2" color="text.secondary" sx={{ textAlign: "left", mt: 2 }}>
                 {thread.content}
             </Typography>
-            <NewComment />
+            <NewComment threadId={thread.ID} />
+            <CommentList comments={thread.comments} />
         </Box>
     );
 };

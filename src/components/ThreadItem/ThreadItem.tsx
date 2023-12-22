@@ -1,38 +1,30 @@
 import { ThreadType } from "../../types/types";
-import LoadingSpinner from "../LoadingSpinner";
-import { threadActions } from "../../store";
-import { useDispatch } from "react-redux";
 import { Box, Grid, Typography } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
-import React, { useState } from "react";
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type threadItemProps = {
     threadItem: ThreadType;
-    setCreateThread: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const ThreadItem = (props: threadItemProps) => {
-    const dispatch = useDispatch();
-    const [loading, setLoading] = useState(false);
-
-    if (loading) {
-        return <LoadingSpinner />;
-    }
+    const navigate = useNavigate();
+    const id = useLocation().pathname.split("/")[2];
 
     return (
         <Box
             onClick={() => {
-                setLoading(true);
-                props.setCreateThread(false);
-                dispatch(threadActions.setCurrent({ currentThread: props.threadItem }));
-                setLoading(false);
+                if (props.threadItem.ID !== +id) {
+                    navigate(`/threads/${props.threadItem.ID}`);
+                }
             }}
             sx={{
                 display: "flex",
                 flexDirection: "column",
                 width: "100%",
-                height: "3.15rem",
+                height: "3.5rem",
                 justifyContent: "space-between",
             }}
         >
@@ -46,7 +38,7 @@ const ThreadItem = (props: threadItemProps) => {
                 <StarIcon sx={{ color: "lightgray", width: "0.8rem" }} />
             </Box>
 
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", height: "100%" }}>
                 <Grid container gap={2}>
                     <Grid item xs={3}>
                         <Typography variant="caption" sx={{ color: "purple", fontWeight: 600 }}>

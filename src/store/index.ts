@@ -40,21 +40,21 @@ const authSlice = createSlice({
     },
 });
 
-const threadSlice = createSlice({
-    name: "thread",
-    initialState: { currentThread: null },
-    reducers: {
-        setCurrent(state, action) {
-            state.currentThread = action.payload.currentThread;
-        },
-    },
-});
+// const threadSlice = createSlice({
+//     name: "thread",
+//     initialState: { currentThread: null },
+//     reducers: {
+//         setCurrent(state, action) {
+//             state.currentThread = action.payload.currentThread;
+//         },
+//     },
+// });
 
 const store = configureStore({
-    reducer: { auth: authSlice.reducer, thread: threadSlice.reducer },
+    reducer: { auth: authSlice.reducer },
 });
 
 export const authActions = authSlice.actions;
-export const threadActions = threadSlice.actions;
+// export const threadActions = threadSlice.actions;
 
 export default store;

@@ -9,7 +9,7 @@ type FilterProps = {
     filterHandler: (filter: string) => void;
 };
 
-const Filter = (props: FilterProps) => {
+const Filter = React.memo(function filter(props: FilterProps) {
     const [category, setCategory] = React.useState<string | null>(props.categories[0]);
     const [open, setOpen] = React.useState(false);
 
@@ -54,6 +54,6 @@ const Filter = (props: FilterProps) => {
             </FormControl>
         </>
     );
-};
+});
 
 export default Filter;

@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
-export default function Auth() {
+const Auth: React.FC = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
@@ -30,7 +30,7 @@ export default function Auth() {
 
     useEffect(() => {
         if (isLoggedIn) {
-            navigate("/", { replace: true });
+            navigate("/threads", { replace: true });
         } else {
             setLoading1(false);
         }
@@ -160,4 +160,6 @@ export default function Auth() {
             </ThemeProvider>
         </>
     );
-}
+};
+
+export default Auth;

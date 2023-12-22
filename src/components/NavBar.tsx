@@ -21,7 +21,7 @@ import axios from "axios";
 // const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Logout"];
 
-const NavBar = () => {
+const NavBar = React.memo(function navBar() {
     // const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -57,7 +57,7 @@ const NavBar = () => {
             <Container maxWidth="xl">
                 <Toolbar disableGutters sx={{ display: "flex", justifyContent: "space-between" }}>
                     <Box
-                        onClick={() => navigate("/")}
+                        onClick={() => navigate("/threads")}
                         sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}
                     >
                         <ForumIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
@@ -195,5 +195,5 @@ const NavBar = () => {
             </Container>
         </AppBar>
     );
-};
+});
 export default NavBar;

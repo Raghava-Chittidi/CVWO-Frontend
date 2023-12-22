@@ -7,11 +7,10 @@ import { Avatar, Button, Typography } from "@mui/material";
 import { red } from "@mui/material/colors";
 import axios from "axios";
 
-const NewComment = () => {
+const NewComment = ({ threadId }: { threadId: number }) => {
     const [comment, setComment] = useState("");
     const [newCommentState, setNewCommentState] = useState(false);
     const username = useSelector((state: selectorStateType) => state.auth.userData?.username);
-    const thread = useSelector((state: selectorStateType) => state.thread.currentThread);
 
     const blurHandler = (event: React.FocusEvent<HTMLTextAreaElement>) => {
         setComment(event.target.value);
@@ -26,7 +25,7 @@ const NewComment = () => {
                 {
                     comment,
                     username,
-                    threadId: thread.ID,
+                    threadId,
                 },
                 { withCredentials: true },
             );

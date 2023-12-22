@@ -1,6 +1,7 @@
-import { selectorStateType } from "../../types/types";
-import TextArea from "../TextArea";
-import Select from "../Select";
+import { selectorStateType } from "../types/types";
+import TextArea from "../components/TextArea";
+import LoadingSpinner from "../components/LoadingSpinner";
+import Select from "../components/Select";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -9,11 +10,11 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { SelectChangeEvent } from "@mui/material/Select"; // eslint-disable-line
-import React, { useState } from "react";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { Alert } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 
 type NewThreadProps = {
     setCreateThread: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,15 +23,30 @@ type NewThreadProps = {
 
 const defaultTheme = createTheme();
 
-const NewThread = (props: NewThreadProps) => {
-    const categories = ["General", ...props.categories.filter((category: string) => category !== "General")];
+const NewThread = () => {
+    const username = useSelector((state: selectorStateType) => state.auth.userData?.username);
+    const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
+    const { categories } = useOutletContext<NewThreadProps>();
+    const allCategories = ["General", ...categories.filter((category: string) => category !== "General")];
     const [category, setCategory] = useState<string>(categories[0]);
     const [title, setTitle] = useState<string>("");
     const [imageUrl, setImageUrl] = useState<string>("");
     const [content, setContent] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
-    const username = useSelector((state: selectorStateType) => state.auth.userData?.username);
+    const [loading, setLoading] = useState<boolean>(true);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!isLoggedIn) {
+            navigate("/login");
+        } else {
+            setLoading(false);
+        }
+    }, [isLoggedIn]);
+
+    if (loading) {
+        return <LoadingSpinner />;
+    }
 
     const changeHandler = (event: SelectChangeEvent) => {
         setCategory(event.target.value);
@@ -64,14 +80,12 @@ const NewThread = (props: NewThreadProps) => {
             );
 
             // Add success notif
-            console.log(res.data.message);
-            setCategory(categories[0]);
+            setCategory(allCategories[0]);
             setTitle("");
             setContent("");
             setImageUrl("");
             setError(null);
-            props.setCreateThread(false);
-            navigate(0);
+            navigate(`/threads/${res.data.id}`);
         } catch (error) {
             setError(error.response.data.message);
             console.log(error);
@@ -92,7 +106,7 @@ const NewThread = (props: NewThreadProps) => {
                         </Alert>
                     )}
                     <Box component="form" onSubmit={submitHandler} noValidate sx={{ mt: 1 }}>
-                        <Select option={category} options={categories} changeHandler={changeHandler} />
+                        <Select option={category} options={allCategories} changeHandler={changeHandler} />
                         <TextField
                             margin="normal"
                             required
