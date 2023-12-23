@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const formatDate = (oldDate: string) => {
     const months = [
         "January",
@@ -44,3 +46,24 @@ export const stringToColour = (str: string) => {
     return colour;
 };
 /* eslint-enable no-bitwise */
+
+export const timeSincePost = (postedDate: string) => {
+    const d = new Date(postedDate);
+    const posted = moment(d, "DD-MM-YYYY");
+    const cur = moment(new Date(), "DD-MM-YYYY");
+    const weeks = cur.diff(posted, "week");
+    if (weeks === 0) {
+        const days = cur.diff(posted, "day");
+        if (days === 0) {
+            const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
+            const t = moment(todayStart, "DD-MM-YYYY");
+            if (posted.diff(t, "minute") >= 0) {
+                return "Today";
+            } else {
+                return "1d";
+            }
+        }
+        return `${days}d`;
+    }
+    return `${weeks}w`;
+};

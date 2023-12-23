@@ -10,7 +10,7 @@ export type authInfo = {
     isLoggedIn: boolean;
 };
 
-const initialState: authInfo = {
+const initialAuthState: authInfo = {
     access_token: "",
     refresh_token: "",
     userData: null,
@@ -19,7 +19,7 @@ const initialState: authInfo = {
 
 const authSlice = createSlice({
     name: "auth",
-    initialState,
+    initialState: initialAuthState,
     reducers: {
         login(state, action) {
             const { tokenPair, userData } = action.payload;
@@ -40,21 +40,38 @@ const authSlice = createSlice({
     },
 });
 
-// const threadSlice = createSlice({
-//     name: "thread",
-//     initialState: { currentThread: null },
-//     reducers: {
-//         setCurrent(state, action) {
-//             state.currentThread = action.payload.currentThread;
-//         },
-//     },
-// });
+export type threadSearch = {
+    filter: string;
+    searchInput: string;
+};
+
+const initialSearchState: threadSearch = {
+    filter: "All",
+    searchInput: "",
+};
+
+const searchSlice = createSlice({
+    name: "search",
+    initialState: initialSearchState,
+    reducers: {
+        setFilter(state, action) {
+            return { ...state, filter: action.payload.filter };
+        },
+        setSearchInput(state, action) {
+            return { ...state, searchInput: action.payload.searchInput };
+        },
+        reset() {
+            return initialSearchState;
+        },
+    },
+});
 
 const store = configureStore({
-    reducer: { auth: authSlice.reducer },
+    reducer: { auth: authSlice.reducer, search: searchSlice.reducer },
 });
 
 export const authActions = authSlice.actions;
+export const searchActions = searchSlice.actions;
 // export const threadActions = threadSlice.actions;
 
 export default store;

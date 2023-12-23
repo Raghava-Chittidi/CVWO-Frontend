@@ -1,4 +1,5 @@
 import { ThreadType } from "../../types/types";
+import { timeSincePost } from "../../util/util";
 import { Box, Grid, Typography } from "@mui/material";
 import StarIcon from "@mui/icons-material/Star";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
@@ -39,17 +40,17 @@ const ThreadItem = (props: threadItemProps) => {
             </Box>
 
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", height: "100%" }}>
-                <Grid container gap={2}>
-                    <Grid item xs={3}>
+                <Grid container>
+                    <Grid item xs={3} gap={1}>
                         <Typography variant="caption" sx={{ color: "purple", fontWeight: 600 }}>
                             {props.threadItem.category.name}
                         </Typography>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={3} sx={{ textAlign: "center" }}>
                         <Typography variant="caption">{props.threadItem.user.username}</Typography>
                     </Grid>
-                    <Grid item xs={1}>
-                        <Typography variant="caption">{"1w"}</Typography>
+                    <Grid item xs={3} sx={{ textAlign: "center" }}>
+                        <Typography variant="caption">{timeSincePost(props.threadItem.CreatedAt)}</Typography>
                     </Grid>
                 </Grid>
                 <FavoriteOutlinedIcon sx={{ color: "lightgray", width: "0.8rem" }} />

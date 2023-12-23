@@ -58,6 +58,7 @@ type TextAreaProps = {
     minHeight: string;
     maxHeight: string;
     placeholder: string;
+    initial?: string;
     blurHandler?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
 };
 
@@ -65,6 +66,7 @@ const TextArea = (props: TextAreaProps) => {
     return (
         <TextareaAutosize
             aria-multiline
+            defaultValue={props.initial}
             sx={{
                 resize: "vertical",
                 width: "100%",

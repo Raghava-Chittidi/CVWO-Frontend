@@ -1,4 +1,4 @@
-import { authInfo } from "../store";
+import { authInfo, threadSearch } from "../store";
 
 export type UserType = {
     ID: number;
@@ -47,4 +47,4 @@ export type CommentType = {
     DeletedAt: null;
 };
 
-export type selectorStateType = { auth: authInfo; thread: { currentThread: ThreadType } };
+export type selectorStateType = { auth: authInfo; search: threadSearch };

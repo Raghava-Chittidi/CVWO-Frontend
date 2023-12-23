@@ -1,6 +1,7 @@
 import ThreadPost from "../components/Thread/ThreadPost";
-import { ThreadType } from "../types/types";
-import { useOutletContext, useParams } from "react-router-dom";
+import useFetchData from "../hooks/useFetchData";
+import LoadingSpinner from "../components/LoadingSpinner";
+import { useParams } from "react-router-dom";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -9,21 +10,14 @@ import React from "react";
 const defaultTheme = createTheme();
 
 const Thread = () => {
-    const { threads } = useOutletContext<{ threads: ThreadType[] }>();
+    // const { threads } = useOutletContext<{ threads: ThreadType[] }>();
     const { threadId } = useParams();
-    const thread = threads.find((t) => t.ID === parseInt(threadId!))!;
-    // const { data } = useFetchData(`/threads/${threadId}`);
-    // const [thread, setThread] = useState(data);
+    // const thread = threads.find((t) => t.ID === parseInt(threadId!))!;
+    const { loading, data: thread } = useFetchData(`/threads/${threadId}`);
 
-    // console.log(data);
-
-    // useEffect(() => {
-    //     setThread(data);
-    // }, [data]);
-
-    // if (!thread) {
-    //     return <LoadingSpinner height="100%" />;
-    // }
+    if (loading || !thread) {
+        return <LoadingSpinner height="100%" />;
+    }
 
     return (
         <ThemeProvider theme={defaultTheme}>

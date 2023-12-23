@@ -13,7 +13,7 @@ type ThreadItemListProps = {
     threadItems: ThreadType[];
 };
 
-const ThreadItemList = React.memo(function threadItemList(props: ThreadItemListProps) {
+const ThreadItemList = (props: ThreadItemListProps) => {
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const navigate = useNavigate();
 
@@ -36,6 +36,7 @@ const ThreadItemList = React.memo(function threadItemList(props: ThreadItemListP
                     <Box
                         sx={{
                             display: "flex",
+                            height: "80vh",
                             flexDirection: "column",
                             justifyContent: "center",
                             alignItems: "center",
@@ -74,6 +75,6 @@ const ThreadItemList = React.memo(function threadItemList(props: ThreadItemListP
             </List>
         </Box>
     );
-});
+};
 
 export default ThreadItemList;

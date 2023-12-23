@@ -1,21 +1,26 @@
-import React, { useRef, useState } from "react";
+import { searchActions } from "../../store";
+import { selectorStateType } from "../../types/types";
+import React from "react";
 import Paper from "@mui/material/Paper";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
+import { useDispatch, useSelector } from "react-redux";
 
 type SearchBarProps = {
     placeholder: string;
-    searchHandler: (seachInput: string) => void;
+    // searchHandler: (seachInput: string) => void;
 };
 
 const SearchBar = (props: SearchBarProps) => {
-    const [searchInput, setSearchInput] = useState<string>("");
+    // const [searchInput, setSearchInput] = useState<string>("");
     // const [filter, setFilter] = useState<string>("All");
-    const searchRef = useRef<HTMLInputElement | null>(null);
+    const searchInput = useSelector((state: selectorStateType) => state.search.searchInput);
+    const dispatch = useDispatch();
+
     const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchInput(event.target.value);
-        props.searchHandler(event.target.value);
+        dispatch(searchActions.setSearchInput({ searchInput: event.target.value }));
+        // props.searchHandler(event.target.value);
     };
 
     return (
@@ -35,15 +40,14 @@ const SearchBar = (props: SearchBarProps) => {
                 placeholder={`Search ${props.placeholder} Threads`}
                 onChange={changeHandler}
                 value={searchInput}
-                ref={searchRef}
             />
             {/* {searchInput.length == 0 && <Filter categories={props.categories} setFilter={setFilter} />} */}
             {searchInput.length >= 1 && (
                 <ClearIcon
                     sx={{ mr: 1.5, fontSize: 25, cursor: "pointer" }}
                     onClick={() => {
-                        setSearchInput("");
-                        props.searchHandler("");
+                        dispatch(searchActions.setSearchInput({ searchInput: "" }));
+                        // props.searchHandler("");
                         // searchRef.current!.focus();
                     }}
                 />

@@ -1,21 +1,27 @@
+import { selectorStateType } from "../../types/types";
+import { searchActions } from "../../store";
 import MenuItem from "@mui/material/MenuItem";
 import * as React from "react";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
+import TuneIcon from "@mui/icons-material/Tune";
+import { useDispatch, useSelector } from "react-redux";
 
 type FilterProps = {
     categories: string[];
-    filterHandler: (filter: string) => void;
+    // filterHandler: (filter: string) => void;
 };
 
 const Filter = React.memo(function filter(props: FilterProps) {
-    const [category, setCategory] = React.useState<string | null>(props.categories[0]);
+    // const [category, setCategory] = React.useState<string | null>(props.categories[0]);
+    const category = useSelector((state: selectorStateType) => state.search.filter);
+    const dispatch = useDispatch();
     const [open, setOpen] = React.useState(false);
 
     const handleChange = (event: React.MouseEvent) => {
-        setCategory(event.currentTarget.id);
-        props.filterHandler(event.currentTarget.id);
+        // setCategory(event.currentTarget.id);
+        dispatch(searchActions.setFilter({ filter: event.currentTarget.id }));
+        // props.filterHandler(event.currentTarget.id);
     };
 
     const handleClose = () => {
@@ -28,7 +34,7 @@ const Filter = React.memo(function filter(props: FilterProps) {
 
     return (
         <>
-            <FilterAltOutlinedIcon
+            <TuneIcon
                 sx={{
                     fontSize: 25,
                     cursor: "pointer",

@@ -1,4 +1,4 @@
-import { selectorStateType } from "../types/types";
+import { selectorStateType, ThreadType } from "../types/types";
 import TextArea from "../components/TextArea";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Select from "../components/Select";
@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 import { Alert } from "@mui/material";
 
 type NewThreadProps = {
+    setThreads: React.Dispatch<React.SetStateAction<ThreadType[]>>;
     setCreateThread: React.Dispatch<React.SetStateAction<boolean>>;
     categories: string[];
 };
@@ -26,9 +27,9 @@ const defaultTheme = createTheme();
 const NewThread = () => {
     const username = useSelector((state: selectorStateType) => state.auth.userData?.username);
     const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
-    const { categories } = useOutletContext<NewThreadProps>();
+    const { categories, setThreads } = useOutletContext<NewThreadProps>();
     const allCategories = ["General", ...categories.filter((category: string) => category !== "General")];
-    const [category, setCategory] = useState<string>(categories[0]);
+    const [category, setCategory] = useState<string>(allCategories[0]);
     const [title, setTitle] = useState<string>("");
     const [imageUrl, setImageUrl] = useState<string>("");
     const [content, setContent] = useState<string>("");
@@ -80,12 +81,9 @@ const NewThread = () => {
             );
 
             // Add success notif
-            setCategory(allCategories[0]);
-            setTitle("");
-            setContent("");
-            setImageUrl("");
+            setThreads((prevState) => [res.data.thread, ...prevState]);
             setError(null);
-            navigate(`/threads/${res.data.id}`);
+            navigate(`/threads/${res.data.thread.ID}`);
         } catch (error) {
             setError(error.response.data.message);
             console.log(error);

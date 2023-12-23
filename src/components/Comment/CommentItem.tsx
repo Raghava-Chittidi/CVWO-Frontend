@@ -1,6 +1,7 @@
+import EditComment from "./EditComment";
 import AvatarHeader from "../AvatarHeader";
 import { CommentType, selectorStateType } from "../../types/types";
-import React from "react";
+import React, { useState } from "react";
 import { Typography } from "@mui/material";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import { Box } from "@mui/system";
@@ -14,6 +15,7 @@ type CommentItemProps = {
 
 const CommentItem: React.FC<CommentItemProps> = (props: CommentItemProps) => {
     const username = useSelector((state: selectorStateType) => state.auth.userData?.username);
+    const [edit, setEdit] = useState<boolean>(false);
 
     const deleteCommentHandler = () => {
         // try {
@@ -21,6 +23,10 @@ const CommentItem: React.FC<CommentItemProps> = (props: CommentItemProps) => {
         // } catch (error) {
         // }
     };
+
+    if (edit) {
+        return <EditComment comment={props.comment} setDisplay={setEdit} />;
+    }
 
     return (
         <Box sx={{ mt: 2, mb: 5, display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
@@ -35,6 +41,7 @@ const CommentItem: React.FC<CommentItemProps> = (props: CommentItemProps) => {
                                 color: "blue",
                                 ":hover": { textDecoration: "underline" },
                             }}
+                            onClick={() => setEdit(true)}
                         >
                             Edit
                         </Typography>

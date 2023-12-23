@@ -1,11 +1,12 @@
+import { searchActions } from "../store";
 import ThreadItemList from "../components/ThreadItem/ThreadItemList";
-import SearchBar from "../components/SearchBar";
+import SearchBar from "../components/Search/SearchBar";
 import LoadingSpinner from "../components/LoadingSpinner";
-import Filter from "../components/Filter";
+import Filter from "../components/Search/Filter";
 import NavBar from "../components/NavBar";
 import { ThreadType, selectorStateType } from "../types/types";
 import useAuthorise from "../hooks/useAuthorise";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
 import { Box, Button, Grid } from "@mui/material";
 import { Outlet, useLoaderData, useNavigate } from "react-router-dom";
@@ -14,40 +15,91 @@ import axios from "axios";
 const Layout: React.FC = () => {
     const loading = useAuthorise();
     const [categories, threads] = useLoaderData() as [string[], ThreadType[]];
+    const [originalThreads, setOriginalThreads] = useState<ThreadType[]>(threads);
     const [filteredItems, setFilteredItems] = useState<ThreadType[]>(threads);
-    const [searchItems, setSearchItems] = useState<ThreadType[]>(filteredItems);
+    // const [searchItems, setSearchItems] = useState<ThreadType[]>(threads);
     const [placeholder, setPlaceholder] = useState<string>("All");
     const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
+    const filter = useSelector((state: selectorStateType) => state.search.filter);
+    const searchInput = useSelector((state: selectorStateType) => state.search.searchInput);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    console.log(originalThreads);
 
     useEffect(() => {
+        setOriginalThreads(threads);
         setFilteredItems(threads);
-        setSearchItems(threads);
+        // setSearchItems(threads);
     }, [threads]);
 
-    if (loading || !filteredItems) {
+    useEffect(() => {
+        if (originalThreads.length !== threads.length) {
+            setFilteredItems(originalThreads);
+            // setSearchItems(originalThreads);
+            dispatch(searchActions.reset());
+        }
+    }, [originalThreads]);
+
+    useEffect(() => {
+        setPlaceholder(filter);
+        let searchedThreads = originalThreads;
+        if (searchInput !== "") {
+            searchedThreads = originalThreads.filter((threadItem: ThreadType) =>
+                threadItem.title.toLowerCase().includes(searchInput.toLowerCase()),
+            );
+        }
+
+        if (filter === "All") {
+            setFilteredItems(searchedThreads);
+        } else {
+            searchedThreads = searchedThreads.filter((threadItem: ThreadType) => threadItem.category.name === filter);
+            setFilteredItems(searchedThreads);
+        }
+
+        // else if (filter === "All") {
+        //     const finalThreads = originalThreads.filter((threadItem: ThreadType) =>
+        //         threadItem.title.toLowerCase().includes(searchInput.toLowerCase()),
+        //     );
+        //     setFilteredItems(finalThreads);
+        // } else if (searchInput === "") {
+        //     const finalThreads = originalThreads.filter(
+        //         (threadItem: ThreadType) => threadItem.category.name === filter,
+        //     );
+        //     setFilteredItems(finalThreads);
+        // } else {
+        //     const finalThreads = originalThreads.filter((threadItem: ThreadType) =>
+        //         threadItem.title.toLowerCase().includes(searchInput.toLowerCase()),
+        //     );
+        //     setFilteredItems(finalThreads.filter((threadItem: ThreadType) => threadItem.category.name === filter));
+        // }
+    }, [filter, searchInput]);
+
+    if (loading || !originalThreads) {
         return <LoadingSpinner />;
     }
 
-    const filterHandler = (filter: string) => {
-        setPlaceholder(filter);
-        if (filter === "All") {
-            setFilteredItems(threads);
-            setSearchItems(threads);
-        } else {
-            const finalThreads = threads.filter((threadItem: ThreadType) => threadItem.category.name === filter);
-            setFilteredItems(finalThreads);
-            setSearchItems(finalThreads);
-        }
-    };
+    // const filterHandler = (filter: string) => {
+    //     setPlaceholder(filter);
+    //     if (filter === "All") {
+    //         setFilteredItems(originalThreads);
+    //         setSearchItems(originalThreads);
+    //     } else {
+    //         const finalThreads = originalThreads.filter(
+    //             (threadItem: ThreadType) => threadItem.category.name === filter,
+    //         );
+    //         setFilteredItems(finalThreads);
+    //         setSearchItems(finalThreads);
+    //     }
+    // };
 
-    const searchHandler = (searchInput: string) => {
-        setSearchItems(
-            filteredItems.filter((threadItem: ThreadType) =>
-                threadItem.title.toLowerCase().includes(searchInput.toLowerCase()),
-            ),
-        );
-    };
+    // const searchHandler = (searchInput: string) => {
+    //     setSearchItems(
+    //         filteredItems.filter((threadItem: ThreadType) =>
+    //             threadItem.title.toLowerCase().includes(searchInput.toLowerCase()),
+    //         ),
+    //     );
+    // };
 
     return (
         <>
@@ -76,14 +128,14 @@ const Layout: React.FC = () => {
                         Create Thread
                     </Button>
                     <Box sx={{ display: "flex", alignItems: "center", border: 1, borderColor: "lightgray" }}>
-                        <SearchBar placeholder={placeholder} searchHandler={searchHandler} />
-                        <Filter categories={["All", ...categories]} filterHandler={filterHandler} />
+                        <SearchBar placeholder={placeholder} />
+                        <Filter categories={["All", ...categories]} />
                     </Box>
-                    <ThreadItemList threadItems={searchItems} />
+                    <ThreadItemList threadItems={filteredItems} />
                 </Grid>
 
                 <Grid item xs={9} sx={{ overflowY: "scroll", maxHeight: "93vh" }}>
-                    <Outlet context={{ categories, threads }} />
+                    <Outlet context={{ categories, threads: originalThreads, setThreads: setOriginalThreads }} />
                 </Grid>
             </Grid>
         </>
