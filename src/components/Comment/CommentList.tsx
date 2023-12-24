@@ -1,25 +1,30 @@
 import CommentItem from "./CommentItem";
 import { CommentType } from "../../types/types";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box } from "@mui/system";
 import { Typography } from "@mui/material";
 
 type CommentListProps = {
     comments: CommentType[];
+    setOriginalComments: React.Dispatch<React.SetStateAction<CommentType[]>>;
 };
 
 const CommentList = (props: CommentListProps) => {
+    const [comments, setComments] = useState<CommentType[]>([]);
+
+    useEffect(() => {
+        setComments(props.comments);
+    }, [props.comments]);
+
     return (
         <Box style={{ marginTop: "3rem", width: "100%" }}>
-            {props.comments.length > 0 && (
-                <Typography variant="h5">{`${props.comments.length} Comment${
-                    props.comments.length > 1 ? "s" : ""
-                }`}</Typography>
+            {comments.length > 0 && (
+                <Typography variant="h5">{`${comments.length} Comment${comments.length > 1 ? "s" : ""}`}</Typography>
             )}
             <ul style={{ padding: 0 }}>
-                {props.comments.map((comment) => (
+                {comments.map((comment) => (
                     <Box key={comment.ID}>
-                        <CommentItem comment={comment} />
+                        <CommentItem comment={comment} setComments={props.setOriginalComments} />
                     </Box>
                 ))}
             </ul>

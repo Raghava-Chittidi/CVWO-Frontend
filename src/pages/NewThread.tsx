@@ -25,8 +25,8 @@ type NewThreadProps = {
 const defaultTheme = createTheme();
 
 const NewThread = () => {
-    const username = useSelector((state: selectorStateType) => state.auth.userData?.username);
     const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
+    const authInfo = useSelector((state: selectorStateType) => state.auth);
     const { categories, setThreads } = useOutletContext<NewThreadProps>();
     const allCategories = ["General", ...categories.filter((category: string) => category !== "General")];
     const [category, setCategory] = useState<string>(allCategories[0]);
@@ -69,21 +69,25 @@ const NewThread = () => {
         event.preventDefault();
         try {
             const res = await axios.post(
-                `${process.env.REACT_APP_DOMAIN_URL}/createThread`,
+                `${process.env.REACT_APP_DOMAIN_URL}/create/thread`,
                 {
                     title,
                     content,
                     category,
                     imageUrl,
-                    username,
                 },
-                { withCredentials: true },
+                {
+                    headers: {
+                        Authorization: `Bearer ${authInfo.access_token}`,
+                    },
+                    withCredentials: true,
+                },
             );
 
             // Add success notif
-            setThreads((prevState) => [res.data.thread, ...prevState]);
+            setThreads((prevState) => [res.data.data, ...prevState]);
             setError(null);
-            navigate(`/threads/${res.data.thread.ID}`);
+            navigate(`/threads/${res.data.data.ID}`);
         } catch (error) {
             setError(error.response.data.message);
             console.log(error);

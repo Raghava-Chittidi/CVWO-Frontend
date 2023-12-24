@@ -9,18 +9,14 @@ import { useDispatch, useSelector } from "react-redux";
 
 type SearchBarProps = {
     placeholder: string;
-    // searchHandler: (seachInput: string) => void;
 };
 
 const SearchBar = (props: SearchBarProps) => {
-    // const [searchInput, setSearchInput] = useState<string>("");
-    // const [filter, setFilter] = useState<string>("All");
     const searchInput = useSelector((state: selectorStateType) => state.search.searchInput);
     const dispatch = useDispatch();
 
     const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         dispatch(searchActions.setSearchInput({ searchInput: event.target.value }));
-        // props.searchHandler(event.target.value);
     };
 
     return (
@@ -41,14 +37,11 @@ const SearchBar = (props: SearchBarProps) => {
                 onChange={changeHandler}
                 value={searchInput}
             />
-            {/* {searchInput.length == 0 && <Filter categories={props.categories} setFilter={setFilter} />} */}
             {searchInput.length >= 1 && (
                 <ClearIcon
                     sx={{ mr: 1.5, fontSize: 25, cursor: "pointer" }}
                     onClick={() => {
                         dispatch(searchActions.setSearchInput({ searchInput: "" }));
-                        // props.searchHandler("");
-                        // searchRef.current!.focus();
                     }}
                 />
             )}

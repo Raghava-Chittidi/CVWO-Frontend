@@ -1,13 +1,19 @@
 import ThreadHeader from "./ThreadHeader";
-import { ThreadType } from "../../types/types";
+import { CommentType, ThreadType } from "../../types/types";
 import NewComment from "../Comment/NewComment";
 import CommentList from "../Comment/CommentList";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import { Box, Fade } from "@mui/material";
 import { purple } from "@mui/material/colors";
 
 const ThreadPost = ({ thread }: { thread: ThreadType }) => {
+    const [originalComments, setOriginalComments] = useState<CommentType[]>([]);
+
+    useEffect(() => {
+        setOriginalComments([...thread.comments].reverse());
+    }, [thread.comments]);
+
     return (
         <Box
             sx={{
@@ -37,8 +43,8 @@ const ThreadPost = ({ thread }: { thread: ThreadType }) => {
             <Typography variant="body2" color="text.secondary" sx={{ textAlign: "left", mt: 2 }}>
                 {thread.content}
             </Typography>
-            <NewComment threadId={thread.ID} />
-            <CommentList comments={thread.comments} />
+            <NewComment threadId={thread.ID} setOriginalComments={setOriginalComments} />
+            <CommentList comments={originalComments} setOriginalComments={setOriginalComments} />
         </Box>
     );
 };

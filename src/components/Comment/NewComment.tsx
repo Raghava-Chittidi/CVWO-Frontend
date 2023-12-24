@@ -1,33 +1,47 @@
 import CommentBox from "./CommentBox";
-import { selectorStateType } from "../../types/types";
+import LoadingSpinner from "../LoadingSpinner";
+import { CommentType, selectorStateType } from "../../types/types";
 import { useSelector } from "react-redux";
 import React, { useState } from "react";
 import { Typography } from "@mui/material";
 import axios from "axios";
 
-const NewComment = ({ threadId }: { threadId: number }) => {
-    const [comment, setComment] = useState("");
-    const [newCommentState, setNewCommentState] = useState(false);
-    const username = useSelector((state: selectorStateType) => state.auth.userData?.username);
+type NewCommentProps = {
+    threadId: number;
+    setOriginalComments: React.Dispatch<React.SetStateAction<CommentType[]>>;
+};
+
+const NewComment = (props: NewCommentProps) => {
+    const [comment, setComment] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(false);
+    const [newCommentState, setNewCommentState] = useState<boolean>(false);
+    const authInfo = useSelector((state: selectorStateType) => state.auth);
 
     const submitHandler = async (event: React.FormEvent) => {
         event.preventDefault();
         setNewCommentState(false);
+        setLoading(true);
         try {
             const res = await axios.post(
-                `${process.env.REACT_APP_DOMAIN_URL}/createComment`,
+                `${process.env.REACT_APP_DOMAIN_URL}/create/comment`,
                 {
                     comment,
-                    username,
-                    threadId,
+                    threadId: props.threadId,
                 },
-                { withCredentials: true },
+                { headers: { Authorization: `Bearer ${authInfo.access_token}` }, withCredentials: true },
             );
             console.log(res.data);
+            props.setOriginalComments((prevState) => [res.data.data, ...prevState]);
+            setLoading(false);
         } catch (error) {
+            setLoading(false);
             console.log(error);
         }
     };
+
+    if (loading) {
+        return <LoadingSpinner height="100%" />;
+    }
 
     if (!newCommentState) {
         return (

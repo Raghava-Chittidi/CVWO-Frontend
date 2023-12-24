@@ -1,6 +1,6 @@
 import ThreadItem from "./ThreadItem";
 import { ThreadType } from "../../types/types";
-import React, { useState } from "react";
+import React from "react";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -11,15 +11,11 @@ import { useNavigate } from "react-router-dom";
 
 type ThreadItemListProps = {
     threadItems: ThreadType[];
+    selected?: number;
 };
 
 const ThreadItemList = (props: ThreadItemListProps) => {
-    const [selectedId, setSelectedId] = useState<number | null>(null);
     const navigate = useNavigate();
-
-    const handleListItemClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, id: number) => {
-        setSelectedId(id);
-    };
 
     return (
         <Box
@@ -59,13 +55,7 @@ const ThreadItemList = (props: ThreadItemListProps) => {
                 <Box sx={{ height: "80vh" }}>
                     {props.threadItems.map((threadItem) => (
                         <Box key={threadItem.ID} sx={{ marginLeft: 0.5, marginRight: 0.5 }}>
-                            <ListItemButton
-                                selected={selectedId === threadItem.ID}
-                                onClick={(event) => {
-                                    handleListItemClick(event, threadItem.ID);
-                                }}
-                                sx={{ borderRadius: 1 }}
-                            >
+                            <ListItemButton selected={props.selected === threadItem.ID} sx={{ borderRadius: 1 }}>
                                 <ThreadItem threadItem={threadItem} />
                             </ListItemButton>
                             <Divider sx={{ width: "98%", color: "lightgray", m: "auto" }} />

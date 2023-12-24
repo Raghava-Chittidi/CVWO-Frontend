@@ -9,34 +9,34 @@ import useAuthorise from "../hooks/useAuthorise";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
 import { Box, Button, Grid } from "@mui/material";
-import { Outlet, useLoaderData, useNavigate } from "react-router-dom";
+import { Outlet, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 const Layout: React.FC = () => {
     const loading = useAuthorise();
     const [categories, threads] = useLoaderData() as [string[], ThreadType[]];
     const [originalThreads, setOriginalThreads] = useState<ThreadType[]>(threads);
-    const [filteredItems, setFilteredItems] = useState<ThreadType[]>(threads);
-    // const [searchItems, setSearchItems] = useState<ThreadType[]>(threads);
+    const [finalThreads, setFinalThreads] = useState<ThreadType[]>(threads);
     const [placeholder, setPlaceholder] = useState<string>("All");
+
     const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
     const filter = useSelector((state: selectorStateType) => state.search.filter);
     const searchInput = useSelector((state: selectorStateType) => state.search.searchInput);
+
+    const { threadId } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    console.log(originalThreads);
+    // console.log(originalThreads);
 
     useEffect(() => {
         setOriginalThreads(threads);
-        setFilteredItems(threads);
-        // setSearchItems(threads);
+        setFinalThreads(threads);
     }, [threads]);
 
     useEffect(() => {
         if (originalThreads.length !== threads.length) {
-            setFilteredItems(originalThreads);
-            // setSearchItems(originalThreads);
+            setFinalThreads(originalThreads);
             dispatch(searchActions.reset());
         }
     }, [originalThreads]);
@@ -51,55 +51,16 @@ const Layout: React.FC = () => {
         }
 
         if (filter === "All") {
-            setFilteredItems(searchedThreads);
+            setFinalThreads(searchedThreads);
         } else {
             searchedThreads = searchedThreads.filter((threadItem: ThreadType) => threadItem.category.name === filter);
-            setFilteredItems(searchedThreads);
+            setFinalThreads(searchedThreads);
         }
-
-        // else if (filter === "All") {
-        //     const finalThreads = originalThreads.filter((threadItem: ThreadType) =>
-        //         threadItem.title.toLowerCase().includes(searchInput.toLowerCase()),
-        //     );
-        //     setFilteredItems(finalThreads);
-        // } else if (searchInput === "") {
-        //     const finalThreads = originalThreads.filter(
-        //         (threadItem: ThreadType) => threadItem.category.name === filter,
-        //     );
-        //     setFilteredItems(finalThreads);
-        // } else {
-        //     const finalThreads = originalThreads.filter((threadItem: ThreadType) =>
-        //         threadItem.title.toLowerCase().includes(searchInput.toLowerCase()),
-        //     );
-        //     setFilteredItems(finalThreads.filter((threadItem: ThreadType) => threadItem.category.name === filter));
-        // }
     }, [filter, searchInput]);
 
     if (loading || !originalThreads) {
         return <LoadingSpinner />;
     }
-
-    // const filterHandler = (filter: string) => {
-    //     setPlaceholder(filter);
-    //     if (filter === "All") {
-    //         setFilteredItems(originalThreads);
-    //         setSearchItems(originalThreads);
-    //     } else {
-    //         const finalThreads = originalThreads.filter(
-    //             (threadItem: ThreadType) => threadItem.category.name === filter,
-    //         );
-    //         setFilteredItems(finalThreads);
-    //         setSearchItems(finalThreads);
-    //     }
-    // };
-
-    // const searchHandler = (searchInput: string) => {
-    //     setSearchItems(
-    //         filteredItems.filter((threadItem: ThreadType) =>
-    //             threadItem.title.toLowerCase().includes(searchInput.toLowerCase()),
-    //         ),
-    //     );
-    // };
 
     return (
         <>
@@ -131,11 +92,11 @@ const Layout: React.FC = () => {
                         <SearchBar placeholder={placeholder} />
                         <Filter categories={["All", ...categories]} />
                     </Box>
-                    <ThreadItemList threadItems={filteredItems} />
+                    <ThreadItemList selected={threadId ? +threadId : undefined} threadItems={finalThreads} />
                 </Grid>
 
                 <Grid item xs={9} sx={{ overflowY: "scroll", maxHeight: "93vh" }}>
-                    <Outlet context={{ categories, threads: originalThreads, setThreads: setOriginalThreads }} />
+                    <Outlet context={{ categories, setThreads: setOriginalThreads }} />
                 </Grid>
             </Grid>
         </>

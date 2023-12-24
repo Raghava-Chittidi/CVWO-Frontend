@@ -42,7 +42,7 @@ const NavBar = React.memo(function navBar() {
     const logoutHandler = async () => {
         dispatch(authActions.logout());
         try {
-            await axios.get(`${process.env.REACT_APP_DOMAIN_URL}/logout`, { withCredentials: true });
+            await axios.post(`${process.env.REACT_APP_DOMAIN_URL}/logout`, { withCredentials: true });
         } catch (err) {
             console.log(err);
         }

@@ -9,19 +9,15 @@ import { useDispatch, useSelector } from "react-redux";
 
 type FilterProps = {
     categories: string[];
-    // filterHandler: (filter: string) => void;
 };
 
 const Filter = React.memo(function filter(props: FilterProps) {
-    // const [category, setCategory] = React.useState<string | null>(props.categories[0]);
     const category = useSelector((state: selectorStateType) => state.search.filter);
     const dispatch = useDispatch();
     const [open, setOpen] = React.useState(false);
 
     const handleChange = (event: React.MouseEvent) => {
-        // setCategory(event.currentTarget.id);
         dispatch(searchActions.setFilter({ filter: event.currentTarget.id }));
-        // props.filterHandler(event.currentTarget.id);
     };
 
     const handleClose = () => {
