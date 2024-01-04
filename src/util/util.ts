@@ -32,15 +32,14 @@ export const formatDate = (oldDate: string) => {
     return `${m} ${d} at ${hr}:${min} ${ampm}`;
 };
 
-/* eslint-disable no-bitwise */
-export const stringToColour = (str: string) => {
+export const usernameToColour = (str: string) => {
     let hash = 0;
-    str.split("").forEach((char) => {
-        hash = char.charCodeAt(0) + ((hash << 5) - hash);
-    });
+    const arr = str.split("");
+    for (const s of arr) {
+        hash = s.charCodeAt(0) + ((hash << 5) - hash);
+    }
     return `hsl(${hash % 360}, 100%, 70%)`;
 };
-/* eslint-enable no-bitwise */
 
 export const timeSincePost = (postedDate: string) => {
     const d = new Date(postedDate);

@@ -1,5 +1,5 @@
 import TextArea from "../TextArea";
-import { stringToColour } from "../../util/util";
+import { usernameToColour } from "../../util/util";
 import { selectorStateType } from "../../types/types";
 import { Avatar, Box, Button } from "@mui/material";
 import React from "react";
@@ -29,7 +29,7 @@ const CommentBox = (props: CommentBoxProps) => {
                     marginTop: "1rem",
                 }}
             >
-                <Avatar sx={{ bgcolor: stringToColour(username), width: 50, height: 50, fontSize: 25, mr: 1 }}>
+                <Avatar sx={{ bgcolor: usernameToColour(username), width: 50, height: 50, fontSize: 25, mr: 1 }}>
                     {username[0].toUpperCase()}
                 </Avatar>
                 <TextArea

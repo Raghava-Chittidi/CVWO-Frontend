@@ -1,4 +1,4 @@
-import { formatDate, stringToColour } from "../util/util";
+import { formatDate, usernameToColour } from "../util/util";
 import { Avatar, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React from "react";
@@ -11,7 +11,7 @@ type AvatarHeaderProps = {
 const AvatarHeader = (props: AvatarHeaderProps) => {
     return (
         <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Avatar sx={{ bgcolor: stringToColour(props.username), width: 50, height: 50, fontSize: 25 }}>
+            <Avatar sx={{ bgcolor: usernameToColour(props.username), width: 50, height: 50, fontSize: 25 }}>
                 {props.username[0].toUpperCase()}
             </Avatar>
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", ml: 1 }}>
