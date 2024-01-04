@@ -1,51 +1,183 @@
 import ThreadHeader from "./ThreadHeader";
-import { CommentType, ThreadType } from "../../types/types";
+import LoadingSpinner from "../LoadingSpinner";
+import Like from "../Like";
+import { CommentType, ThreadType, selectorStateType } from "../../types/types";
 import NewComment from "../Comment/NewComment";
 import CommentList from "../Comment/CommentList";
+import Modal from "../Modal";
+import { likeActions } from "../../store";
 import React, { useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import { Box, Fade } from "@mui/material";
-import { purple } from "@mui/material/colors";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const ThreadPost = ({ thread }: { thread: ThreadType }) => {
+type ThreadPostProps = {
+    thread: ThreadType;
+    setThreads: React.Dispatch<React.SetStateAction<ThreadType[]>>;
+};
+
+const ThreadPost = (props: ThreadPostProps) => {
     const [originalComments, setOriginalComments] = useState<CommentType[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [modal, setModal] = useState<boolean>(false);
+    const authInfo = useSelector((state: selectorStateType) => state.auth);
+    const likeobj = useSelector((state: selectorStateType) => state.like)[props.thread.ID];
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        setOriginalComments([...thread.comments].reverse());
-    }, [thread.comments]);
+        setOriginalComments([...props.thread.comments].reverse());
+    }, [props.thread.comments]);
+
+    if (loading) {
+        return <LoadingSpinner />;
+    }
+
+    const initialLikeBooleanValue = likeobj.liked;
+    const initialLikes = props.thread.likes.length;
+
+    const likeThreadHandler = async () => {
+        dispatch(likeActions.setValue({ id: props.thread.ID, liked: true, favourited: likeobj.favourited }));
+        try {
+            const res = await axios.post(
+                `${process.env.REACT_APP_DOMAIN_URL}/like/thread/${props.thread.ID}`,
+                {},
+                {
+                    headers: { Authorization: `Bearer ${authInfo.access_token}` },
+                    withCredentials: true,
+                },
+            );
+            console.log(res.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const unlikeThreadHandler = async () => {
+        dispatch(likeActions.setValue({ id: props.thread.ID, liked: false, favourited: likeobj.favourited }));
+        try {
+            const res = await axios.post(
+                `${process.env.REACT_APP_DOMAIN_URL}/unlike/thread/${props.thread.ID}`,
+                {},
+                {
+                    headers: { Authorization: `Bearer ${authInfo.access_token}` },
+                    withCredentials: true,
+                },
+            );
+            console.log(res.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const deleteThreadHandler = async () => {
+        setLoading(true);
+        try {
+            const res = await axios.delete(`${process.env.REACT_APP_DOMAIN_URL}/delete/thread/${props.thread.ID}`, {
+                headers: { Authorization: `Bearer ${authInfo.access_token}` },
+                withCredentials: true,
+            });
+            props.setThreads((prevState) => prevState.filter((t) => t.ID !== props.thread.ID));
+            console.log(res.data);
+            setLoading(false);
+            navigate("/threads");
+        } catch (error) {
+            setLoading(false);
+            console.log(error);
+        }
+    };
 
     return (
-        <Box
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                width: "70%",
-                m: "auto",
-                mt: 2,
-            }}
-            key={thread.ID}
-        >
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", width: "100%" }}>
-                <Typography variant="h4" sx={{ maxWidth: "80%" }}>
-                    {thread.title}
-                </Typography>
-                <Typography variant="h6" color={purple[700]}>
-                    {thread.category.name}
-                </Typography>
+        <>
+            <Modal
+                open={modal}
+                setOpen={setModal}
+                handler={deleteThreadHandler}
+                header="Warning!"
+                content="Are you sure you want to delete this thread? This action is irreversible!"
+            />
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    width: "70%",
+                    m: "auto",
+                    mt: 2,
+                }}
+                key={props.thread.ID}
+            >
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
+                    <Typography variant="h4" sx={{ maxWidth: "80%" }}>
+                        {props.thread.title}
+                    </Typography>
+                    {authInfo.userData!.username === props.thread.user.username && (
+                        <Box sx={{ display: "flex" }}>
+                            <Typography
+                                sx={{
+                                    marginRight: 1.5,
+                                    cursor: "pointer",
+                                    color: "blue",
+                                    ":hover": { textDecoration: "underline" },
+                                }}
+                                onClick={() => navigate(`/threads/edit/${props.thread.ID}`)}
+                            >
+                                Edit
+                            </Typography>
+                            <Typography
+                                sx={{
+                                    cursor: "pointer",
+                                    color: "red",
+                                    ":hover": { textDecoration: "underline" },
+                                }}
+                                onClick={() => {
+                                    setModal(true);
+                                }}
+                            >
+                                Delete
+                            </Typography>
+                        </Box>
+                    )}
+                </Box>
+                <ThreadHeader thread={props.thread} />
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        marginTop: "1rem",
+                        width: "100%",
+                    }}
+                >
+                    <Like
+                        initialLikes={initialLikes}
+                        initialLikeBool={initialLikeBooleanValue}
+                        likeHandler={likeThreadHandler}
+                        unlikeHandler={unlikeThreadHandler}
+                    />
+                    <Box sx={{ width: "100%", pl: 1 }}>
+                        {props.thread.imageUrl && (
+                            <Fade in timeout={500}>
+                                <Box sx={{ marginBottom: 2 }}>
+                                    <img
+                                        style={{ width: "100%", maxWidth: "100%" }}
+                                        src={props.thread.imageUrl}
+                                        alt={props.thread.title}
+                                    />
+                                </Box>
+                            </Fade>
+                        )}
+
+                        <Typography variant="body1" color="text.secondary" sx={{ textAlign: "left", marginBottom: 2 }}>
+                            {props.thread.content}
+                        </Typography>
+                    </Box>
+                </Box>
+                <NewComment threadId={props.thread.ID} setOriginalComments={setOriginalComments} />
+                <CommentList comments={originalComments} setOriginalComments={setOriginalComments} />
             </Box>
-            <ThreadHeader username={thread.user.username} date={thread.CreatedAt} />
-            {thread.imageUrl && (
-                <Fade in timeout={500}>
-                    <img style={{ maxWidth: "100%", marginTop: "1rem" }} src={thread.imageUrl} alt={thread.title} />
-                </Fade>
-            )}
-            <Typography variant="body2" color="text.secondary" sx={{ textAlign: "left", mt: 2 }}>
-                {thread.content}
-            </Typography>
-            <NewComment threadId={thread.ID} setOriginalComments={setOriginalComments} />
-            <CommentList comments={originalComments} setOriginalComments={setOriginalComments} />
-        </Box>
+        </>
     );
 };
 

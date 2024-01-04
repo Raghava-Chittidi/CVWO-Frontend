@@ -1,11 +1,11 @@
 import EditComment from "./EditComment";
 import AvatarHeader from "../AvatarHeader";
 import LoadingSpinner from "../LoadingSpinner";
+import Like from "../Like";
 import { CommentType, selectorStateType } from "../../types/types";
 import Modal from "../Modal";
 import React, { useState } from "react";
 import { Typography } from "@mui/material";
-import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import { Box } from "@mui/system";
 import { useSelector } from "react-redux";
 import axios from "axios";
@@ -24,6 +24,9 @@ const CommentItem: React.FC<CommentItemProps> = (props: CommentItemProps) => {
     const [edit, setEdit] = useState<boolean>(false);
     const [modal, setModal] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
+    const initialLikeBooleanValue =
+        props.comment.likes.findIndex((like) => like.user.username === authInfo.userData?.username) !== -1;
+    const initialLikes = props.comment.likes.length;
 
     const deleteCommentHandler = async () => {
         setLoading(true);
@@ -37,6 +40,38 @@ const CommentItem: React.FC<CommentItemProps> = (props: CommentItemProps) => {
             setLoading(false);
         } catch (error) {
             setLoading(false);
+            console.log(error);
+        }
+    };
+
+    const likeCommentHandler = async () => {
+        try {
+            const res = await axios.post(
+                `${process.env.REACT_APP_DOMAIN_URL}/like/comment/${props.comment.ID}`,
+                {},
+                {
+                    headers: { Authorization: `Bearer ${authInfo.access_token}` },
+                    withCredentials: true,
+                },
+            );
+            console.log(res.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const unlikeCommentHandler = async () => {
+        try {
+            const res = await axios.post(
+                `${process.env.REACT_APP_DOMAIN_URL}/unlike/comment/${props.comment.ID}`,
+                {},
+                {
+                    headers: { Authorization: `Bearer ${authInfo.access_token}` },
+                    withCredentials: true,
+                },
+            );
+            console.log(res.data);
+        } catch (error) {
             console.log(error);
         }
     };
@@ -60,7 +95,7 @@ const CommentItem: React.FC<CommentItemProps> = (props: CommentItemProps) => {
             />
             <Box sx={{ mt: 2, mb: 5, display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
                 <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
-                    <AvatarHeader username={comment.user.username} date={comment.UpdatedAt || comment.CreatedAt} />
+                    <AvatarHeader username={comment.user.username} date={comment.CreatedAt} />
                     {comment.user.username === username && (
                         <Box sx={{ display: "flex" }}>
                             <Typography
@@ -88,10 +123,15 @@ const CommentItem: React.FC<CommentItemProps> = (props: CommentItemProps) => {
                     )}
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "flex-start", mt: 2 }}>
-                    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                    {/* <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                         <FavoriteBorderOutlinedIcon sx={{ fontSize: 25, ml: 1.5, mr: 1.5 }} />
-                        <Typography sx={{ fontSize: 20, pl: 1, pr: 1 }}>0</Typography>
-                    </Box>
+                    </Box> */}
+                    <Like
+                        initialLikes={initialLikes}
+                        initialLikeBool={initialLikeBooleanValue}
+                        likeHandler={likeCommentHandler}
+                        unlikeHandler={unlikeCommentHandler}
+                    />
                     <Typography sx={{ ml: 1 }}>{comment.content}</Typography>
                 </Box>
             </Box>

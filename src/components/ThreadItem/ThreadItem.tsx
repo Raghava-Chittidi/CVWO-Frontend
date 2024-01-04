@@ -5,14 +5,21 @@ import StarIcon from "@mui/icons-material/Star";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { red, yellow } from "@mui/material/colors";
 
 type threadItemProps = {
     threadItem: ThreadType;
+    initialFavouriteBooleanValue: boolean;
+    initialLikeBooleanValue: boolean;
 };
 
 const ThreadItem = (props: threadItemProps) => {
     const navigate = useNavigate();
     const id = useLocation().pathname.split("/")[2];
+
+    // const authInfo = useSelector((state: selectorStateType) => state.auth);
+    // const initialFavouriteBooleanValue = likeObj?.favourited;
+    // const initialLikeBooleanValue = likeObj?.liked;
 
     return (
         <Box
@@ -36,7 +43,9 @@ const ThreadItem = (props: threadItemProps) => {
                 >
                     {props.threadItem.title}
                 </Typography>
-                <StarIcon sx={{ color: "lightgray", width: "0.8rem" }} />
+                <StarIcon
+                    sx={{ color: `${props.initialFavouriteBooleanValue ? yellow[500] : "lightgray"}`, width: "0.8rem" }}
+                />
             </Box>
 
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", height: "100%" }}>
@@ -53,7 +62,9 @@ const ThreadItem = (props: threadItemProps) => {
                         <Typography variant="caption">{timeSincePost(props.threadItem.CreatedAt)}</Typography>
                     </Grid>
                 </Grid>
-                <FavoriteOutlinedIcon sx={{ color: "lightgray", width: "0.8rem" }} />
+                <FavoriteOutlinedIcon
+                    sx={{ color: `${props.initialLikeBooleanValue ? red[500] : "lightgray"}`, width: "0.8rem" }}
+                />
             </Box>
         </Box>
     );

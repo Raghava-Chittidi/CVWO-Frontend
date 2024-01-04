@@ -1,5 +1,5 @@
 import ThreadItem from "./ThreadItem";
-import { ThreadType } from "../../types/types";
+import { ThreadType, selectorStateType } from "../../types/types";
 import React from "react";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
@@ -8,6 +8,7 @@ import Divider from "@mui/material/Divider";
 import { Link, Typography } from "@mui/material";
 import { blue } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 type ThreadItemListProps = {
     threadItems: ThreadType[];
@@ -16,6 +17,7 @@ type ThreadItemListProps = {
 
 const ThreadItemList = (props: ThreadItemListProps) => {
     const navigate = useNavigate();
+    const likeObjs = useSelector((state: selectorStateType) => state.like);
 
     return (
         <Box
@@ -56,7 +58,11 @@ const ThreadItemList = (props: ThreadItemListProps) => {
                     {props.threadItems.map((threadItem) => (
                         <Box key={threadItem.ID} sx={{ marginLeft: 0.5, marginRight: 0.5 }}>
                             <ListItemButton selected={props.selected === threadItem.ID} sx={{ borderRadius: 1 }}>
-                                <ThreadItem threadItem={threadItem} />
+                                <ThreadItem
+                                    threadItem={threadItem}
+                                    initialFavouriteBooleanValue={likeObjs[threadItem.ID].favourited}
+                                    initialLikeBooleanValue={likeObjs[threadItem.ID].liked}
+                                />
                             </ListItemButton>
                             <Divider sx={{ width: "98%", color: "lightgray", m: "auto" }} />
                         </Box>

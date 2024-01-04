@@ -46,7 +46,12 @@ const NewComment = (props: NewCommentProps) => {
     if (!newCommentState) {
         return (
             <Typography
-                sx={{ marginTop: "1rem", cursor: "pointer", color: "gray", ":hover": { textDecoration: "underline" } }}
+                sx={{
+                    marginLeft: "3.5rem",
+                    cursor: "pointer",
+                    color: "gray",
+                    ":hover": { textDecoration: "underline" },
+                }}
                 onClick={() => setNewCommentState(true)}
             >
                 Comment

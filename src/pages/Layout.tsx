@@ -1,4 +1,4 @@
-import { searchActions } from "../store";
+import { likeActions, searchActions } from "../store";
 import ThreadItemList from "../components/ThreadItem/ThreadItemList";
 import SearchBar from "../components/Search/SearchBar";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -20,14 +20,13 @@ const Layout: React.FC = () => {
     const [placeholder, setPlaceholder] = useState<string>("All");
 
     const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
+    const username = useSelector((state: selectorStateType) => state.auth.userData?.username);
     const filter = useSelector((state: selectorStateType) => state.search.filter);
     const searchInput = useSelector((state: selectorStateType) => state.search.searchInput);
 
     const { threadId } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
-    // console.log(originalThreads);
 
     useEffect(() => {
         setOriginalThreads(threads);
@@ -36,10 +35,16 @@ const Layout: React.FC = () => {
 
     useEffect(() => {
         if (originalThreads.length !== threads.length) {
-            setFinalThreads(originalThreads);
             dispatch(searchActions.reset());
         }
+        setFinalThreads(originalThreads);
     }, [originalThreads]);
+
+    useEffect(() => {
+        dispatch(likeActions.init({ threads: originalThreads, username }));
+    }, [originalThreads, username]);
+
+    // console.log(originalThreads);
 
     useEffect(() => {
         setPlaceholder(filter);

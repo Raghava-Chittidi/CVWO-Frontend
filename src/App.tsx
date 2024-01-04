@@ -2,6 +2,7 @@ import Home from "./pages/Home";
 import Layout, { layoutLoader } from "./pages/Layout";
 import NewThread from "./pages/NewThread";
 import Thread from "./pages/Thread";
+import EditThread from "./pages/EditThread";
 import Auth from "./pages/Auth";
 import Redirect from "./components/Redirect";
 import store from "./store";
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
             {
                 path: "/threads/:threadId",
                 element: <Thread />,
+            },
+            {
+                path: "/threads/edit/:threadId",
+                element: <EditThread />,
             },
         ],
     },

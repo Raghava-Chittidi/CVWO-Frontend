@@ -16,11 +16,11 @@ const useAuthorise = () => {
             const res = await axios.get(`${process.env.REACT_APP_DOMAIN_URL}/refresh`, {
                 withCredentials: true,
             });
-            const { AccessToken, RefreshToken, Email, Username } = res.data;
+            const { AccessToken, RefreshToken, Email, Username, ID } = res.data;
             dispatch(
                 authActions.login({
                     tokenPair: { access_token: AccessToken, refresh_token: RefreshToken },
-                    userData: { email: Email, username: Username },
+                    userData: { email: Email, username: Username, id: ID },
                 }),
             );
             setLoading(false);
