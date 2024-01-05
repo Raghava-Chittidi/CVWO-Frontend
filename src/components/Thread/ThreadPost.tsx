@@ -12,6 +12,7 @@ import { Box, Fade } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 type ThreadPostProps = {
     thread: ThreadType;
@@ -23,7 +24,8 @@ const ThreadPost = (props: ThreadPostProps) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [modal, setModal] = useState<boolean>(false);
     const authInfo = useSelector((state: selectorStateType) => state.auth);
-    const likeobj = useSelector((state: selectorStateType) => state.like)[props.thread.ID];
+    const likeObjs = useSelector((state: selectorStateType) => state.like);
+    const likeObj = likeObjs.find((likeObj) => likeObj.id === props.thread.ID)!;
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -35,11 +37,11 @@ const ThreadPost = (props: ThreadPostProps) => {
         return <LoadingSpinner />;
     }
 
-    const initialLikeBooleanValue = likeobj.liked;
+    const initialLikeBooleanValue = likeObj.liked;
     const initialLikes = props.thread.likes.length;
 
     const likeThreadHandler = async () => {
-        dispatch(likeActions.setValue({ id: props.thread.ID, liked: true, favourited: likeobj.favourited }));
+        dispatch(likeActions.setValue({ id: props.thread.ID, liked: true, favourited: likeObj.favourited }));
         try {
             const res = await axios.post(
                 `${process.env.REACT_APP_DOMAIN_URL}/like/thread/${props.thread.ID}`,
@@ -52,11 +54,12 @@ const ThreadPost = (props: ThreadPostProps) => {
             console.log(res.data);
         } catch (error) {
             console.log(error);
+            toast.error(error.message);
         }
     };
 
     const unlikeThreadHandler = async () => {
-        dispatch(likeActions.setValue({ id: props.thread.ID, liked: false, favourited: likeobj.favourited }));
+        dispatch(likeActions.setValue({ id: props.thread.ID, liked: false, favourited: likeObj.favourited }));
         try {
             const res = await axios.post(
                 `${process.env.REACT_APP_DOMAIN_URL}/unlike/thread/${props.thread.ID}`,
@@ -69,6 +72,7 @@ const ThreadPost = (props: ThreadPostProps) => {
             console.log(res.data);
         } catch (error) {
             console.log(error);
+            toast.error(error.message);
         }
     };
 
@@ -80,12 +84,15 @@ const ThreadPost = (props: ThreadPostProps) => {
                 withCredentials: true,
             });
             props.setThreads((prevState) => prevState.filter((t) => t.ID !== props.thread.ID));
+            dispatch(likeActions.delete({ id: props.thread.ID }));
             console.log(res.data);
             setLoading(false);
+            toast.success(res.data.message);
             navigate("/threads");
         } catch (error) {
             setLoading(false);
             console.log(error);
+            toast.error(error.message);
         }
     };
 

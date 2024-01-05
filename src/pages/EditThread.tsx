@@ -6,6 +6,7 @@ import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 type EditThreadProps = {
     setThreads: React.Dispatch<React.SetStateAction<ThreadType[]>>;
@@ -57,7 +58,6 @@ const EditThread = () => {
                 },
             );
 
-            // Add success notif
             console.log(res.data);
             setThreads((prevState: ThreadType[]) => {
                 const curThreadIndex = prevState.findIndex((originalThread) => thread.ID === originalThread.ID);
@@ -66,10 +66,12 @@ const EditThread = () => {
             });
             setLoading(false);
             setError(null);
+            toast.success(res.data.message);
             navigate(`/threads/${res.data.data.ID}`);
         } catch (error) {
             setLoading(false);
             setError(error.response.data.message);
+            toast.error(error.message);
             console.log(error);
         }
     };

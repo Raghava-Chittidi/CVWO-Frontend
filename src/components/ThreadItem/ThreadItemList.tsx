@@ -1,5 +1,6 @@
 import ThreadItem from "./ThreadItem";
 import { ThreadType, selectorStateType } from "../../types/types";
+import LoadingSpinner from "../LoadingSpinner";
 import React from "react";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
@@ -18,6 +19,10 @@ type ThreadItemListProps = {
 const ThreadItemList = (props: ThreadItemListProps) => {
     const navigate = useNavigate();
     const likeObjs = useSelector((state: selectorStateType) => state.like);
+
+    if (likeObjs.length < props.threadItems.length) {
+        return <LoadingSpinner height="100%" />;
+    }
 
     return (
         <Box
@@ -60,8 +65,12 @@ const ThreadItemList = (props: ThreadItemListProps) => {
                             <ListItemButton selected={props.selected === threadItem.ID} sx={{ borderRadius: 1 }}>
                                 <ThreadItem
                                     threadItem={threadItem}
-                                    initialFavouriteBooleanValue={likeObjs[threadItem.ID].favourited}
-                                    initialLikeBooleanValue={likeObjs[threadItem.ID].liked}
+                                    initialFavouriteBooleanValue={
+                                        likeObjs.find((likeObj) => likeObj.id === threadItem.ID)!.favourited
+                                    }
+                                    initialLikeBooleanValue={
+                                        likeObjs.find((likeObj) => likeObj.id === threadItem.ID)!.liked
+                                    }
                                 />
                             </ListItemButton>
                             <Divider sx={{ width: "98%", color: "lightgray", m: "auto" }} />

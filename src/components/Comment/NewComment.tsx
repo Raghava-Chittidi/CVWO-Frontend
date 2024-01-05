@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import React, { useState } from "react";
 import { Typography } from "@mui/material";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 type NewCommentProps = {
     threadId: number;
@@ -30,12 +31,12 @@ const NewComment = (props: NewCommentProps) => {
                 },
                 { headers: { Authorization: `Bearer ${authInfo.access_token}` }, withCredentials: true },
             );
-            console.log(res.data);
+            toast.success(res.data.message);
             props.setOriginalComments((prevState) => [res.data.data, ...prevState]);
             setLoading(false);
         } catch (error) {
             setLoading(false);
-            console.log(error);
+            toast.error(error.message);
         }
     };
 

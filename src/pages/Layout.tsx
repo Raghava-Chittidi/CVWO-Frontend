@@ -11,6 +11,8 @@ import React, { useEffect, useState } from "react";
 import { Box, Button, Grid } from "@mui/material";
 import { Outlet, useLoaderData, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Layout: React.FC = () => {
     const loading = useAuthorise();
@@ -34,17 +36,17 @@ const Layout: React.FC = () => {
     }, [threads]);
 
     useEffect(() => {
+        dispatch(likeActions.init({ threads, username }));
+    }, [threads, username]);
+
+    useEffect(() => {
         if (originalThreads.length !== threads.length) {
             dispatch(searchActions.reset());
         }
         setFinalThreads(originalThreads);
     }, [originalThreads]);
 
-    useEffect(() => {
-        dispatch(likeActions.init({ threads: originalThreads, username }));
-    }, [originalThreads, username]);
-
-    // console.log(originalThreads);
+    // console.log(finalThreads);
 
     useEffect(() => {
         setPlaceholder(filter);
@@ -100,6 +102,16 @@ const Layout: React.FC = () => {
                     <ThreadItemList selected={threadId ? +threadId : undefined} threadItems={finalThreads} />
                 </Grid>
 
+                <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    draggable
+                    theme="light"
+                />
                 <Grid item xs={9} sx={{ overflowY: "scroll", maxHeight: "93vh" }}>
                     <Outlet context={{ categories, setThreads: setOriginalThreads }} />
                 </Grid>

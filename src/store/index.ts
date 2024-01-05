@@ -25,15 +25,12 @@ const authSlice = createSlice({
     reducers: {
         login(state, action) {
             const { tokenPair, userData } = action.payload;
-            // localStorage.setItem("token", token);
-            // localStorage.setItem("userData", JSON.stringify(userData));
             state.access_token = tokenPair.access_token;
             state.refresh_token = tokenPair.refresh_token;
             state.isLoggedIn = !!tokenPair.access_token;
             state.userData = userData;
         },
         logout(state) {
-            // localStorage.clear();
             state.access_token = "";
             state.refresh_token = "";
             state.isLoggedIn = false;
@@ -79,21 +76,27 @@ const likeSlice = createSlice({
             const username = action.payload.username;
             const len = threads.length;
             const res = [];
-            for (let i = 0; i < len * 2; i++) {
-                res.push({ id: i, liked: false, favourited: false });
-            }
+
             for (let i = 0; i < len; i++) {
                 const thread = threads[i];
                 const likedBoolValue = thread.likes.findIndex((like) => like.user.username === username) !== -1;
                 const favouritedBoolValue =
                     thread.favourites.findIndex((favourite) => favourite.user.username === username) !== -1;
                 const likeObj = { id: thread.ID, liked: likedBoolValue, favourited: favouritedBoolValue };
-                res[thread.ID] = likeObj;
+                res.push(likeObj);
             }
             return res;
         },
+        insert(state, action) {
+            return [...state, { id: action.payload.id, liked: false, favourited: false }];
+        },
+        delete(state, action) {
+            const res = state.filter((likeObj) => likeObj.id !== action.payload.id);
+            return res;
+        },
         setValue(state, action) {
-            state[action.payload.id] = action.payload;
+            const index = state.findIndex((likeObj) => likeObj.id === action.payload.id);
+            state[index] = action.payload;
             return state;
         },
     },

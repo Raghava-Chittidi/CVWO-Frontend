@@ -5,7 +5,7 @@ import StarIcon from "@mui/icons-material/Star";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { red, yellow } from "@mui/material/colors";
+import { red } from "@mui/material/colors";
 
 type threadItemProps = {
     threadItem: ThreadType;
@@ -44,7 +44,11 @@ const ThreadItem = (props: threadItemProps) => {
                     {props.threadItem.title}
                 </Typography>
                 <StarIcon
-                    sx={{ color: `${props.initialFavouriteBooleanValue ? yellow[500] : "lightgray"}`, width: "0.8rem" }}
+                    sx={{
+                        color: `${props.initialFavouriteBooleanValue ? "rgb(255, 160, 22)" : "lightgray"}`,
+                        opacity: `${props.initialFavouriteBooleanValue ? 0.8 : 1}`,
+                        width: "0.8rem",
+                    }}
                 />
             </Box>
 

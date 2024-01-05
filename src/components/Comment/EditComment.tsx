@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { Box } from "@mui/material";
+import { toast } from "react-toastify";
 
 type EditCommentProps = {
     comment: CommentType;
@@ -28,13 +29,14 @@ const EditComment = (props: EditCommentProps) => {
                 },
                 { headers: { Authorization: `Bearer ${authInfo.access_token}` }, withCredentials: true },
             );
-            console.log(res.data);
             props.setComment({ ...props.comment, content: editedComment });
             setLoading(false);
             props.setDisplay(false);
+            toast.success(res.data.message);
         } catch (error) {
             setLoading(false);
             console.log(error);
+            toast.error(error.message);
         }
     };
 

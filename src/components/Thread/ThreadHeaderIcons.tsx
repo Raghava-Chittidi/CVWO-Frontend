@@ -1,13 +1,15 @@
 import { ThreadType, selectorStateType } from "../../types/types";
 import { likeActions } from "../../store";
+import FavouriteStar from "../../Lottie/Favourite.json";
 import { Box } from "@mui/system";
-import StarIcon from "@mui/icons-material/Star";
-import StarBorderIcon from "@mui/icons-material/StarBorder";
-import React, { useState } from "react";
-import { yellow, purple } from "@mui/material/colors";
+import StarRoundedIcon from "@mui/icons-material/StarRounded";
+import React, { useEffect, useRef, useState } from "react";
+import { purple } from "@mui/material/colors";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Typography } from "@mui/material";
+import { toast } from "react-toastify";
+import Lottie, { LottieRefCurrentProps } from "lottie-react"; // eslint-disable-line
 
 type ThreadHeaderIconsProps = {
     thread: ThreadType;
@@ -15,10 +17,18 @@ type ThreadHeaderIconsProps = {
 
 const ThreadHeaderIcons = (props: ThreadHeaderIconsProps) => {
     const authInfo = useSelector((state: selectorStateType) => state.auth);
-    const likeobj = useSelector((state: selectorStateType) => state.like)[props.thread.ID];
-    const initialFavouriteBooleanValue = likeobj.favourited;
+    const likeObjs = useSelector((state: selectorStateType) => state.like);
+    const likeObj = likeObjs.find((likeObj) => likeObj.id === props.thread.ID)!;
+    const initialFavouriteBooleanValue = likeObj.favourited;
     const [favourited, setFavourited] = useState<boolean>(initialFavouriteBooleanValue);
+    const starRef = useRef<LottieRefCurrentProps | null>(null);
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (initialFavouriteBooleanValue === true) {
+            starRef.current!.goToAndStop(45, true);
+        }
+    }, [initialFavouriteBooleanValue]);
 
     const favouriteHandler = async () => {
         try {
@@ -33,6 +43,7 @@ const ThreadHeaderIcons = (props: ThreadHeaderIconsProps) => {
             console.log(res.data);
         } catch (error) {
             console.log(error);
+            toast.error(error.message);
         }
     };
 
@@ -49,38 +60,40 @@ const ThreadHeaderIcons = (props: ThreadHeaderIconsProps) => {
             console.log(res.data);
         } catch (error) {
             console.log(error);
+            toast.error(error.message);
         }
     };
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
             <Box>
-                {/* Added to favourites react toastify */}
                 {!favourited && (
-                    <StarBorderIcon
-                        sx={{ cursor: "pointer" }}
+                    <StarRoundedIcon
+                        sx={{ cursor: "pointer", fontSize: 30, color: "gray", opacity: 0.85 }}
                         onClick={() => {
                             setFavourited(true);
                             favouriteHandler();
                             dispatch(
-                                likeActions.setValue({ id: props.thread.ID, liked: likeobj.liked, favourited: true }),
+                                likeActions.setValue({ id: props.thread.ID, liked: likeObj.liked, favourited: true }),
                             );
                         }}
                     />
                 )}
                 {favourited && (
-                    <StarIcon
-                        sx={{ color: yellow[600], cursor: "pointer" }}
+                    <Lottie
+                        lottieRef={starRef}
+                        animationData={FavouriteStar}
+                        loop={false}
+                        style={{ width: 30, margin: 0, cursor: "pointer" }}
                         onClick={() => {
                             setFavourited(false);
                             unfavouriteHandler();
                             dispatch(
-                                likeActions.setValue({ id: props.thread.ID, liked: likeobj.liked, favourited: false }),
+                                likeActions.setValue({ id: props.thread.ID, liked: likeObj.liked, favourited: false }),
                             );
                         }}
                     />
                 )}
-                {/* <Typography variant="caption">{favourited ? "Favourited" : "Favourite"}</Typography> */}
             </Box>
             <Typography variant="body2" sx={{ color: purple[700], fontWeight: 600 }}>
                 {props.thread.category.name}

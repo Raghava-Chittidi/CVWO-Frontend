@@ -9,6 +9,7 @@ import { Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 type CommentItemProps = {
     comment: CommentType;
@@ -36,11 +37,12 @@ const CommentItem: React.FC<CommentItemProps> = (props: CommentItemProps) => {
                 withCredentials: true,
             });
             props.setComments((prevState) => prevState.filter((c) => c.ID !== comment.ID));
-            console.log(res.data);
+            toast.success(res.data.message);
             setLoading(false);
         } catch (error) {
             setLoading(false);
             console.log(error);
+            toast.error(error.message);
         }
     };
 
@@ -57,6 +59,7 @@ const CommentItem: React.FC<CommentItemProps> = (props: CommentItemProps) => {
             console.log(res.data);
         } catch (error) {
             console.log(error);
+            toast.error(error.message);
         }
     };
 
@@ -73,6 +76,7 @@ const CommentItem: React.FC<CommentItemProps> = (props: CommentItemProps) => {
             console.log(res.data);
         } catch (error) {
             console.log(error);
+            toast.error(error.message);
         }
     };
 
