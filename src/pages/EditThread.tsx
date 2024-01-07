@@ -26,7 +26,7 @@ const EditThread = () => {
 
     useEffect(() => {
         if (!isLoggedIn) {
-            navigate("/login");
+            navigate("/threads");
         } else {
             setLoading(false);
         }
