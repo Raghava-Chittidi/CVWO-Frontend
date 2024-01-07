@@ -17,6 +17,7 @@ const NewComment = (props: NewCommentProps) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [newCommentState, setNewCommentState] = useState<boolean>(false);
     const authInfo = useSelector((state: selectorStateType) => state.auth);
+    const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
 
     const submitHandler = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -40,6 +41,10 @@ const NewComment = (props: NewCommentProps) => {
         }
     };
 
+    if (!isLoggedIn) {
+        return;
+    }
+
     if (loading) {
         return <LoadingSpinner height="100%" />;
     }
@@ -48,7 +53,8 @@ const NewComment = (props: NewCommentProps) => {
         return (
             <Typography
                 sx={{
-                    marginLeft: "3.5rem",
+                    mb: 1,
+                    ml: "3.5rem",
                     cursor: "pointer",
                     color: "#949494",
                     transition: "0.3s",

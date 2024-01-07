@@ -6,17 +6,18 @@ import Filter from "../components/Search/Filter";
 import NavBar from "../components/NavBar";
 import { ThreadType, selectorStateType } from "../types/types";
 import useAuthorise from "../hooks/useAuthorise";
+import useFetchData from "../hooks/useFetchData";
 import { useDispatch, useSelector } from "react-redux";
 import React, { useEffect, useState } from "react";
 import { Box, Grid } from "@mui/material";
-import { Outlet, useLoaderData, useParams } from "react-router-dom";
-import axios from "axios";
+import { Outlet, useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Layout: React.FC = () => {
     const { loading } = useAuthorise();
-    const [categories, threads] = useLoaderData() as [string[], ThreadType[]];
+    const { data: threads } = useFetchData(`/threads`);
+    const { data: categories } = useFetchData(`/categories`);
     const [originalThreads, setOriginalThreads] = useState<ThreadType[]>(threads);
     const [finalThreads, setFinalThreads] = useState<ThreadType[]>(threads);
     const [placeholder, setPlaceholder] = useState<string>("All");
@@ -34,11 +35,13 @@ const Layout: React.FC = () => {
     }, [threads]);
 
     useEffect(() => {
-        dispatch(likeActions.init({ threads, username }));
+        if (threads) {
+            dispatch(likeActions.init({ threads, username }));
+        }
     }, [threads, username]);
 
     useEffect(() => {
-        if (originalThreads.length !== threads.length) {
+        if (threads && originalThreads && originalThreads.length !== threads.length) {
             dispatch(searchActions.reset());
         }
         setFinalThreads(originalThreads);
@@ -63,7 +66,7 @@ const Layout: React.FC = () => {
         }
     }, [filter, searchInput]);
 
-    if (loading || !originalThreads) {
+    if (loading || !categories || !originalThreads) {
         return <LoadingSpinner />;
     }
 
@@ -98,13 +101,3 @@ const Layout: React.FC = () => {
 };
 
 export default Layout;
-
-export const layoutLoader = async () => {
-    const res1 = await axios.get(`${process.env.REACT_APP_DOMAIN_URL}${"/categories"}`, {
-        withCredentials: true,
-    });
-    const res2 = await axios.get(`${process.env.REACT_APP_DOMAIN_URL}${"/threads"}`, {
-        withCredentials: true,
-    });
-    return (await Promise.all([res1, res2])).map((res) => res.data);
-};

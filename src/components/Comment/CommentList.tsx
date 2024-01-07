@@ -17,7 +17,7 @@ const CommentList = (props: CommentListProps) => {
     }, [props.comments]);
 
     return (
-        <Box style={{ marginTop: "3rem", width: "100%" }}>
+        <Box sx={{ mt: 3, width: "100%" }}>
             {comments.length > 0 && (
                 <Typography variant="h5">{`${comments.length} Comment${comments.length > 1 ? "s" : ""}`}</Typography>
             )}

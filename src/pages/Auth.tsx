@@ -143,7 +143,14 @@ const Auth: React.FC = () => {
                                 type="submit"
                                 fullWidth
                                 variant="contained"
-                                sx={{ mt: 3, mb: 2, textTransform: "none", fontSize: 18 }}
+                                sx={{
+                                    mt: 3,
+                                    mb: 2,
+                                    textTransform: "none",
+                                    fontSize: 18,
+                                    backgroundColor: "#4169E1",
+                                    ":hover": { backgroundColor: "#0F52BA" },
+                                }}
                             >
                                 {isLoginState ? "Login" : "Sign Up"}
                             </Button>

@@ -120,7 +120,7 @@ const ThreadPost = (props: ThreadPostProps) => {
                     <Typography variant="h4" sx={{ maxWidth: "80%" }}>
                         {props.thread.title}
                     </Typography>
-                    {authInfo.userData!.username === props.thread.user.username && (
+                    {authInfo.userData?.username === props.thread.user.username && (
                         <Box sx={{ display: "flex" }}>
                             <Button
                                 // variant="text"
@@ -149,7 +149,7 @@ const ThreadPost = (props: ThreadPostProps) => {
                         display: "flex",
                         alignItems: "flex-start",
                         width: "100%",
-                        mt: 1,
+                        mt: 2,
                     }}
                 >
                     <Like
@@ -161,7 +161,7 @@ const ThreadPost = (props: ThreadPostProps) => {
                     <Box sx={{ width: "100%", pl: 1 }}>
                         {props.thread.imageUrl && (
                             <Fade in timeout={500}>
-                                <Box sx={{ marginBottom: 2 }}>
+                                <Box sx={{ mb: 2 }}>
                                     <img
                                         style={{ width: "100%", maxWidth: "100%" }}
                                         src={props.thread.imageUrl}
@@ -171,7 +171,7 @@ const ThreadPost = (props: ThreadPostProps) => {
                             </Fade>
                         )}
 
-                        <Typography variant="body1" color="text.secondary" sx={{ textAlign: "left", marginBottom: 2 }}>
+                        <Typography variant="body1" color="text.secondary" sx={{ textAlign: "left", mb: 2 }}>
                             {props.thread.content}
                         </Typography>
                     </Box>

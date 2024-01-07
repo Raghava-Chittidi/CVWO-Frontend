@@ -73,36 +73,46 @@ const ThreadHeaderIcons = (props: ThreadHeaderIconsProps) => {
                 alignItems: "flex-end",
             }}
         >
-            <Box>
-                {!favourited && (
-                    <StarRoundedIcon
-                        sx={{ cursor: "pointer", fontSize: 30, color: "gray", opacity: 0.85 }}
-                        onClick={() => {
-                            setFavourited(true);
-                            favouriteHandler();
-                            dispatch(
-                                likeActions.setValue({ id: props.thread.ID, liked: likeObj.liked, favourited: true }),
-                            );
-                        }}
-                    />
-                )}
-                {favourited && (
-                    <Lottie
-                        lottieRef={starRef}
-                        animationData={FavouriteStar}
-                        loop={false}
-                        style={{ width: 30, margin: 0, cursor: "pointer" }}
-                        onClick={() => {
-                            setFavourited(false);
-                            unfavouriteHandler();
-                            dispatch(
-                                likeActions.setValue({ id: props.thread.ID, liked: likeObj.liked, favourited: false }),
-                            );
-                        }}
-                    />
-                )}
-            </Box>
-            <Typography variant="body2" sx={{ color: "#4169E1", fontWeight: 600, mb: 2 }}>
+            {authInfo.isLoggedIn && (
+                <Box>
+                    {!favourited && (
+                        <StarRoundedIcon
+                            sx={{ cursor: "pointer", fontSize: 30, color: "gray", opacity: 0.85 }}
+                            onClick={() => {
+                                setFavourited(true);
+                                favouriteHandler();
+                                dispatch(
+                                    likeActions.setValue({
+                                        id: props.thread.ID,
+                                        liked: likeObj.liked,
+                                        favourited: true,
+                                    }),
+                                );
+                            }}
+                        />
+                    )}
+                    {favourited && (
+                        <Lottie
+                            lottieRef={starRef}
+                            animationData={FavouriteStar}
+                            loop={false}
+                            style={{ width: 30, margin: 0, cursor: "pointer" }}
+                            onClick={() => {
+                                setFavourited(false);
+                                unfavouriteHandler();
+                                dispatch(
+                                    likeActions.setValue({
+                                        id: props.thread.ID,
+                                        liked: likeObj.liked,
+                                        favourited: false,
+                                    }),
+                                );
+                            }}
+                        />
+                    )}
+                </Box>
+            )}
+            <Typography variant="body2" sx={{ color: "#4169E1", fontWeight: 600, mb: 0.5 }}>
                 {props.thread.category.name}
             </Typography>
         </Box>

@@ -1,5 +1,5 @@
 import Home from "./pages/Home";
-import Layout, { layoutLoader } from "./pages/Layout";
+import Layout from "./pages/Layout";
 import NewThread from "./pages/NewThread";
 import Thread from "./pages/Thread";
 import EditThread from "./pages/EditThread";
@@ -27,7 +27,6 @@ const router = createBrowserRouter([
     {
         path: "/threads",
         element: <Layout />,
-        loader: layoutLoader,
         children: [
             {
                 path: "/threads",

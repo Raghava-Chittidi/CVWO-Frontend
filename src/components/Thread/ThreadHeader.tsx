@@ -14,7 +14,7 @@ const ThreadHeader = (props: ThreadHeaderProps) => {
             sx={{
                 display: "flex",
                 justifyContent: "space-between",
-                alignItems: "center",
+                alignItems: "flex-end",
                 mt: 1,
                 width: "100%",
             }}

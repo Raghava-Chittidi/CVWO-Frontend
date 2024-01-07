@@ -1,10 +1,13 @@
-import Heart from "../lottie/Heart1.json";
+import Heart from "../lottie/Heart.json";
+import { selectorStateType } from "../types/types";
 import React, { useState } from "react";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import { red } from "@mui/material/colors";
 import { Box, Typography } from "@mui/material";
 import Lottie from "lottie-react"; // eslint-disable-line
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 type LikeProps = {
     initialLikeBool: boolean;
@@ -17,6 +20,7 @@ const Like = (props: LikeProps) => {
     const [liked, setLiked] = useState<boolean>(props.initialLikeBool);
     const [likes, setLikes] = useState<number>(props.initialLikes);
     const [liking, setLiking] = useState<boolean>(false);
+    const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
     let timer: NodeJS.Timeout | null = null;
 
     return (
@@ -37,13 +41,17 @@ const Like = (props: LikeProps) => {
                 <FavoriteBorderRoundedIcon
                     sx={{ cursor: "pointer", marginBottom: "1.7rem" }}
                     onClick={() => {
-                        setLiking(true);
-                        setLiked(true);
-                        setLikes((prevState) => prevState + 1);
-                        props.likeHandler();
-                        timer = setTimeout(() => {
-                            setLiking(false);
-                        }, 500);
+                        if (isLoggedIn) {
+                            setLiking(true);
+                            setLiked(true);
+                            setLikes((prevState) => prevState + 1);
+                            props.likeHandler();
+                            timer = setTimeout(() => {
+                                setLiking(false);
+                            }, 500);
+                        } else {
+                            toast.info("You need to be logged in!");
+                        }
                     }}
                 />
             )}
