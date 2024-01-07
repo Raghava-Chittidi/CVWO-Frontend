@@ -34,12 +34,12 @@ const ThreadItemList = (props: ThreadItemListProps) => {
                 borderColor: "lightgray",
             }}
         >
-            <List component="nav" aria-label="main mailbox folders">
+            <List component="nav" sx={{ pt: 0.5 }}>
                 {props.threadItems.length === 0 && (
                     <Box
                         sx={{
                             display: "flex",
-                            height: "80vh",
+                            height: "85vh",
                             flexDirection: "column",
                             justifyContent: "center",
                             alignItems: "center",
@@ -59,7 +59,7 @@ const ThreadItemList = (props: ThreadItemListProps) => {
                         </Link>
                     </Box>
                 )}
-                <Box sx={{ height: "80vh" }}>
+                <Box sx={{ height: "85vh" }}>
                     {props.threadItems.map((threadItem) => (
                         <Box key={threadItem.ID} sx={{ marginLeft: 0.5, marginRight: 0.5 }}>
                             <ListItemButton selected={props.selected === threadItem.ID} sx={{ borderRadius: 1 }}>

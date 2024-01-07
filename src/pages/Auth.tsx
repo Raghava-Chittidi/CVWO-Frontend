@@ -25,16 +25,16 @@ const Auth: React.FC = () => {
     const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
     const [isLoginState, setIsLoginState] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
-    const [loading1, setLoading1] = useState<boolean>(true);
-    const loading2 = useAuthorise();
+    const [loading, setLoading] = useState<boolean>(true);
+    const { loading: loading1 } = useAuthorise();
 
     useEffect(() => {
         if (isLoggedIn) {
             navigate("/threads", { replace: true });
-        } else {
-            setLoading1(false);
+        } else if (!isLoggedIn && !loading1) {
+            setLoading(false);
         }
-    }, [isLoggedIn]);
+    }, [isLoggedIn, loading1]);
 
     const switchAuthStateHandler = () => {
         setIsLoginState((prevState) => !prevState);
@@ -74,12 +74,14 @@ const Auth: React.FC = () => {
                     userData: { email: Email, username: Username },
                 }),
             );
+            setLoading(true);
+            navigate("/threads", { replace: true });
         } catch (err) {
             setError(err.response.data.message as string);
         }
     };
 
-    if (loading1 || loading2) {
+    if (loading || loading1) {
         return <LoadingSpinner />;
     }
 

@@ -8,7 +8,7 @@ import Modal from "../Modal";
 import { likeActions } from "../../store";
 import React, { useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
-import { Box, Fade } from "@mui/material";
+import { Box, Button, Fade } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -122,29 +122,24 @@ const ThreadPost = (props: ThreadPostProps) => {
                     </Typography>
                     {authInfo.userData!.username === props.thread.user.username && (
                         <Box sx={{ display: "flex" }}>
-                            <Typography
-                                sx={{
-                                    marginRight: 1.5,
-                                    cursor: "pointer",
-                                    color: "blue",
-                                    ":hover": { textDecoration: "underline" },
-                                }}
+                            <Button
+                                // variant="text"
+                                // color="info"
+                                sx={{ textTransform: "none" }}
                                 onClick={() => navigate(`/threads/edit/${props.thread.ID}`)}
                             >
                                 Edit
-                            </Typography>
-                            <Typography
-                                sx={{
-                                    cursor: "pointer",
-                                    color: "red",
-                                    ":hover": { textDecoration: "underline" },
-                                }}
+                            </Button>
+                            <Button
+                                variant="text"
+                                color="error"
+                                sx={{ textTransform: "none" }}
                                 onClick={() => {
                                     setModal(true);
                                 }}
                             >
                                 Delete
-                            </Typography>
+                            </Button>
                         </Box>
                     )}
                 </Box>
@@ -153,8 +148,8 @@ const ThreadPost = (props: ThreadPostProps) => {
                     sx={{
                         display: "flex",
                         alignItems: "flex-start",
-                        marginTop: "1rem",
                         width: "100%",
+                        mt: 1,
                     }}
                 >
                     <Like

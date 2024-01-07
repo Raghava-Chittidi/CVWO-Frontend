@@ -5,7 +5,7 @@ import Like from "../Like";
 import { CommentType, selectorStateType } from "../../types/types";
 import Modal from "../Modal";
 import React, { useState } from "react";
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useSelector } from "react-redux";
 import axios from "axios";
@@ -101,35 +101,27 @@ const CommentItem: React.FC<CommentItemProps> = (props: CommentItemProps) => {
                 <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
                     <AvatarHeader username={comment.user.username} date={comment.CreatedAt} />
                     {comment.user.username === username && (
-                        <Box sx={{ display: "flex" }}>
-                            <Typography
-                                sx={{
-                                    marginRight: "1rem",
-                                    cursor: "pointer",
-                                    color: "blue",
-                                    ":hover": { textDecoration: "underline" },
-                                }}
+                        <Box>
+                            <Button
+                                // variant="text"
+                                // color="info"
+                                sx={{ textTransform: "none" }}
                                 onClick={() => setEdit(true)}
                             >
                                 Edit
-                            </Typography>
-                            <Typography
-                                sx={{
-                                    cursor: "pointer",
-                                    color: "red",
-                                    ":hover": { textDecoration: "underline" },
-                                }}
+                            </Button>
+                            <Button
+                                variant="text"
+                                color="error"
+                                sx={{ textTransform: "none" }}
                                 onClick={() => setModal(true)}
                             >
                                 Delete
-                            </Typography>
+                            </Button>
                         </Box>
                     )}
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "flex-start", mt: 2 }}>
-                    {/* <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                        <FavoriteBorderOutlinedIcon sx={{ fontSize: 25, ml: 1.5, mr: 1.5 }} />
-                    </Box> */}
                     <Like
                         initialLikes={initialLikes}
                         initialLikeBool={initialLikeBooleanValue}

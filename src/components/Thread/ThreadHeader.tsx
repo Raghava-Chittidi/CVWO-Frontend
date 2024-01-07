@@ -10,7 +10,15 @@ type ThreadHeaderProps = {
 
 const ThreadHeader = (props: ThreadHeaderProps) => {
     return (
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 2, width: "100%" }}>
+        <Box
+            sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mt: 1,
+                width: "100%",
+            }}
+        >
             <AvatarHeader username={props.thread.user.username} date={props.thread.CreatedAt} />
             <ThreadHeaderIcons thread={props.thread} />
         </Box>

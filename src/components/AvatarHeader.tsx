@@ -10,11 +10,18 @@ type AvatarHeaderProps = {
 
 const AvatarHeader = (props: AvatarHeaderProps) => {
     return (
-        <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Box sx={{ display: "flex", alignItems: "center", height: "100%" }}>
             <Avatar sx={{ bgcolor: usernameToColour(props.username), width: 50, height: 50, fontSize: 25 }}>
                 {props.username[0].toUpperCase()}
             </Avatar>
-            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", ml: 1 }}>
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    ml: 1,
+                }}
+            >
                 <Typography>{props.username}</Typography>
                 <Typography sx={{ color: "gray", fontSize: 12 }}>{formatDate(props.date)}</Typography>
             </Box>

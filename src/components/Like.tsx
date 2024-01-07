@@ -1,4 +1,4 @@
-import Heart from "../Lottie/Heart1.json";
+import Heart from "../lottie/Heart1.json";
 import React, { useState } from "react";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";

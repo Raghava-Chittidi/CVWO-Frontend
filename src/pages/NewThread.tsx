@@ -59,9 +59,8 @@ const NewThread = () => {
             setError(null);
             toast.success(res.data.message);
             navigate(`/threads/${res.data.data.ID}`);
-        } catch (error) {
-            setError(error.response.data.message);
-            toast.error(error.message);
+        } catch (err) {
+            setError(err.response.data.message);
             console.log(error);
         }
     };

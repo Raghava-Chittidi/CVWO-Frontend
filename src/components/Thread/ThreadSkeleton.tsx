@@ -11,6 +11,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { SelectChangeEvent } from "@mui/material/Select"; // eslint-disable-line
 import React, { FormEvent, useState } from "react";
 import { Alert } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 
 type ThreadSkeletonProps = {
     edit?: boolean;
@@ -28,6 +30,7 @@ const ThreadSkeleton = (props: ThreadSkeletonProps) => {
     const [title, setTitle] = useState<string>(props.thread?.title || "");
     const [imageUrl, setImageUrl] = useState<string>(props.thread?.imageUrl || "");
     const [content, setContent] = useState<string>(props.thread?.content || "");
+    const navigate = useNavigate();
 
     const changeHandler = (event: SelectChangeEvent) => {
         setCategory(event.target.value);
@@ -52,6 +55,14 @@ const ThreadSkeleton = (props: ThreadSkeletonProps) => {
 
     return (
         <ThemeProvider theme={defaultTheme}>
+            <Button
+                sx={{ display: "flex", alignItems: "center", position: "absolute", mt: 1, ml: 1 }}
+                onClick={() => navigate(-1)}
+            >
+                <KeyboardBackspaceIcon />
+                <Typography sx={{ ml: 0.5, textTransform: "none" }}>Back</Typography>
+            </Button>
+
             <Container component="main">
                 <CssBaseline />
                 <Box sx={{ width: "70%", m: "auto", mt: 2 }}>
@@ -100,7 +111,14 @@ const ThreadSkeleton = (props: ThreadSkeletonProps) => {
                             type="submit"
                             fullWidth
                             variant="contained"
-                            sx={{ mt: 3, mb: 2, textTransform: "none", fontSize: 18 }}
+                            sx={{
+                                mt: 3,
+                                mb: 2,
+                                textTransform: "none",
+                                fontSize: 18,
+                                backgroundColor: "#4169E1",
+                                ":hover": { backgroundColor: "#0F52BA" },
+                            }}
                         >
                             {props.edit ? "Save" : "Create"}
                         </Button>

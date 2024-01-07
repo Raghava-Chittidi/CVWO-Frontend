@@ -1,10 +1,9 @@
 import { ThreadType, selectorStateType } from "../../types/types";
 import { likeActions } from "../../store";
-import FavouriteStar from "../../Lottie/Favourite.json";
+import FavouriteStar from "../../lottie/Favourite.json";
 import { Box } from "@mui/system";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import React, { useEffect, useRef, useState } from "react";
-import { purple } from "@mui/material/colors";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Typography } from "@mui/material";
@@ -41,6 +40,7 @@ const ThreadHeaderIcons = (props: ThreadHeaderIconsProps) => {
                 },
             );
             console.log(res.data);
+            // toast.success(res.data.message);
         } catch (error) {
             console.log(error);
             toast.error(error.message);
@@ -58,6 +58,7 @@ const ThreadHeaderIcons = (props: ThreadHeaderIconsProps) => {
                 },
             );
             console.log(res.data);
+            // toast.success(res.data.message);
         } catch (error) {
             console.log(error);
             toast.error(error.message);
@@ -65,7 +66,13 @@ const ThreadHeaderIcons = (props: ThreadHeaderIconsProps) => {
     };
 
     return (
-        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-end",
+            }}
+        >
             <Box>
                 {!favourited && (
                     <StarRoundedIcon
@@ -95,7 +102,7 @@ const ThreadHeaderIcons = (props: ThreadHeaderIconsProps) => {
                     />
                 )}
             </Box>
-            <Typography variant="body2" sx={{ color: purple[700], fontWeight: 600 }}>
+            <Typography variant="body2" sx={{ color: "#4169E1", fontWeight: 600, mb: 2 }}>
                 {props.thread.category.name}
             </Typography>
         </Box>

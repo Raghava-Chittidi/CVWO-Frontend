@@ -17,7 +17,7 @@ const EditThread = () => {
     const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
     const authInfo = useSelector((state: selectorStateType) => state.auth);
     const { threadId } = useParams();
-    const { data: thread } = useFetchData(`/threads/${threadId}`);
+    const { error: err, data: thread } = useFetchData(`/threads/${threadId}`);
     const { categories, setThreads } = useOutletContext<EditThreadProps>();
     const allCategories = ["General", ...categories.filter((category: string) => category !== "General")];
     const [error, setError] = useState<string | null>(null);
@@ -31,6 +31,13 @@ const EditThread = () => {
             setLoading(false);
         }
     }, [isLoggedIn]);
+
+    useEffect(() => {
+        if (err) {
+            navigate("/threads");
+            toast.error("Thread not found!");
+        }
+    }, [err]);
 
     if (loading || !thread || thread.user.username !== authInfo.userData?.username) {
         if (thread && thread.user.username !== authInfo.userData?.username) {
@@ -68,10 +75,10 @@ const EditThread = () => {
             setError(null);
             toast.success(res.data.message);
             navigate(`/threads/${res.data.data.ID}`);
-        } catch (error) {
+        } catch (err) {
             setLoading(false);
-            setError(error.response.data.message);
-            toast.error(error.message);
+            // toast.error(err.message);
+            setError(err.response.data.message);
             console.log(error);
         }
     };

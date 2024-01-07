@@ -50,8 +50,9 @@ const NewComment = (props: NewCommentProps) => {
                 sx={{
                     marginLeft: "3.5rem",
                     cursor: "pointer",
-                    color: "gray",
-                    ":hover": { textDecoration: "underline" },
+                    color: "#949494",
+                    transition: "0.3s",
+                    ":hover": { color: "#5A5A5A" },
                 }}
                 onClick={() => setNewCommentState(true)}
             >

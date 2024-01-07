@@ -9,9 +9,11 @@ const useAuthorise = () => {
     const dispatch = useDispatch();
     const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
     const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
     const sendRequest = async () => {
         try {
+            setError(null);
             setLoading(true);
             const res = await axios.get(`${process.env.REACT_APP_DOMAIN_URL}/refresh`, {
                 withCredentials: true,
@@ -26,6 +28,7 @@ const useAuthorise = () => {
             setLoading(false);
         } catch (err) {
             setLoading(false);
+            setError(err.message);
             console.log(err);
         }
     };
@@ -46,7 +49,7 @@ const useAuthorise = () => {
         }
     }, [isLoggedIn]);
 
-    return loading;
+    return { loading, error };
 };
 
 export default useAuthorise;

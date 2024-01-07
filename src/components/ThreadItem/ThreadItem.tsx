@@ -55,7 +55,7 @@ const ThreadItem = (props: threadItemProps) => {
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", height: "100%" }}>
                 <Grid container>
                     <Grid item xs={3} gap={1}>
-                        <Typography variant="caption" sx={{ color: "purple", fontWeight: 600 }}>
+                        <Typography variant="caption" sx={{ color: "#4169E1", fontWeight: 600 }}>
                             {props.threadItem.category.name}
                         </Typography>
                     </Grid>
