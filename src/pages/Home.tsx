@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 import ForumIcon from "@mui/icons-material/Forum";
 
-const Home: React.FC = () => {
+const Home = () => {
     return (
         <Box
             sx={{

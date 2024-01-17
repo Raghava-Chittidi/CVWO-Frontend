@@ -14,7 +14,7 @@ import { Outlet, useParams } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Layout: React.FC = () => {
+const Layout = () => {
     const { loading } = useAuthorise();
     const { data: threads } = useFetchData(`/threads`);
     const { data: categories } = useFetchData(`/categories`);
@@ -25,7 +25,6 @@ const Layout: React.FC = () => {
     const username = useSelector((state: selectorStateType) => state.auth.userData?.username);
     const filter = useSelector((state: selectorStateType) => state.search.filter);
     const searchInput = useSelector((state: selectorStateType) => state.search.searchInput);
-
     const { threadId } = useParams();
     const dispatch = useDispatch();
 
@@ -35,20 +34,21 @@ const Layout: React.FC = () => {
     }, [threads]);
 
     useEffect(() => {
+        // Initialise likes and favourites for each threaditem
         if (threads) {
             dispatch(likeActions.init({ threads, username }));
         }
     }, [threads, username]);
 
     useEffect(() => {
+        // Reset search and filter if a thread gets created or deleted
         if (threads && originalThreads && originalThreads.length !== threads.length) {
             dispatch(searchActions.reset());
         }
         setFinalThreads(originalThreads);
     }, [originalThreads]);
 
-    // console.log(finalThreads);
-
+    // Filter threads according to category and search
     useEffect(() => {
         setPlaceholder(filter);
         let searchedThreads = originalThreads;
@@ -71,11 +71,18 @@ const Layout: React.FC = () => {
     }
 
     return (
-        <>
+        <Box sx={{ height: "100vh", width: "100%" }}>
             <NavBar />
-            <Grid container spacing={0}>
-                <Grid item xs={3}>
-                    <Box sx={{ display: "flex", alignItems: "center", border: 1, borderColor: "lightgray" }}>
+            <Grid container spacing={0} height="100%" pb="7rem">
+                <Grid item xs={3} height="100%">
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            border: 1,
+                            borderColor: "lightgray",
+                        }}
+                    >
                         <SearchBar placeholder={placeholder} />
                         <Filter categories={["All", ...categories]} />
                     </Box>
@@ -96,7 +103,7 @@ const Layout: React.FC = () => {
                     <Outlet context={{ categories, setThreads: setOriginalThreads }} />
                 </Grid>
             </Grid>
-        </>
+        </Box>
     );
 };
 

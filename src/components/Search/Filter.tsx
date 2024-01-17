@@ -12,18 +12,20 @@ type FilterProps = {
 };
 
 const Filter = React.memo(function filter(props: FilterProps) {
+    const [open, setOpen] = React.useState(false);
     const category = useSelector((state: selectorStateType) => state.search.filter);
     const dispatch = useDispatch();
-    const [open, setOpen] = React.useState(false);
 
     const handleChange = (event: React.MouseEvent) => {
         dispatch(searchActions.setFilter({ filter: event.currentTarget.id }));
     };
 
+    // Close list of categories
     const handleClose = () => {
         setOpen(false);
     };
 
+    // Open list of categories
     const handleOpen = () => {
         setOpen(true);
     };

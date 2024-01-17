@@ -4,9 +4,6 @@ export type UserType = {
     ID: number;
     email: string;
     username: string;
-    imageUrl?: string;
-    comments: null;
-    threads: null;
     CreatedAt: string;
     UpdatedAt: string;
     DeletedAt: null;
@@ -15,7 +12,6 @@ export type UserType = {
 export type CategoryType = {
     ID: number;
     name: string;
-    threads: null;
     CreatedAt: string;
     UpdatedAt: string;
     DeletedAt: null;

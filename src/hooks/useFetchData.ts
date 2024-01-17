@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+// Custom get request fetch hook with error and loading states
 const useFetchData = (url: string) => {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true);

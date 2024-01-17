@@ -28,13 +28,14 @@ const ThreadItemList = (props: ThreadItemListProps) => {
         <Box
             sx={{
                 bgcolor: "background.paper",
-                overflowY: "scroll",
                 border: 1,
                 borderTop: 0,
                 borderColor: "lightgray",
+                overflowY: "scroll",
+                height: "100%",
             }}
         >
-            <List component="nav" sx={{ pt: 0.5 }}>
+            <List component="nav" sx={{ pt: 0.5, height: "86.5%" }}>
                 {props.threadItems.length === 0 && (
                     <Box
                         sx={{
@@ -59,17 +60,17 @@ const ThreadItemList = (props: ThreadItemListProps) => {
                         </Link>
                     </Box>
                 )}
-                <Box sx={{ height: "85vh" }}>
+                <Box>
                     {props.threadItems.map((threadItem) => (
                         <Box key={threadItem.ID} sx={{ marginLeft: 0.5, marginRight: 0.5 }}>
                             <ListItemButton selected={props.selected === threadItem.ID} sx={{ borderRadius: 1 }}>
                                 <ThreadItem
                                     threadItem={threadItem}
                                     initialFavouriteBooleanValue={
-                                        likeObjs.find((likeObj) => likeObj.id === threadItem.ID)!.favourited
+                                        likeObjs.find((likeObj) => likeObj.id === threadItem.ID)?.favourited || false
                                     }
                                     initialLikeBooleanValue={
-                                        likeObjs.find((likeObj) => likeObj.id === threadItem.ID)!.liked
+                                        likeObjs.find((likeObj) => likeObj.id === threadItem.ID)?.liked || false
                                     }
                                 />
                             </ListItemButton>

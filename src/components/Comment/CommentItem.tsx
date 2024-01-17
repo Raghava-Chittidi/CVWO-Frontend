@@ -16,8 +16,6 @@ type CommentItemProps = {
     setComments: React.Dispatch<React.SetStateAction<CommentType[]>>;
 };
 
-// Comment can also have image
-
 const CommentItem: React.FC<CommentItemProps> = (props: CommentItemProps) => {
     const username = useSelector((state: selectorStateType) => state.auth.userData?.username);
     const authInfo = useSelector((state: selectorStateType) => state.auth);
@@ -84,6 +82,7 @@ const CommentItem: React.FC<CommentItemProps> = (props: CommentItemProps) => {
         return <LoadingSpinner height="9rem" />;
     }
 
+    // If in edit mode
     if (edit) {
         return <EditComment comment={comment} setComment={setComment} setDisplay={setEdit} />;
     }
@@ -102,12 +101,7 @@ const CommentItem: React.FC<CommentItemProps> = (props: CommentItemProps) => {
                     <AvatarHeader username={comment.user.username} date={comment.CreatedAt} />
                     {comment.user.username === username && (
                         <Box>
-                            <Button
-                                // variant="text"
-                                // color="info"
-                                sx={{ textTransform: "none" }}
-                                onClick={() => setEdit(true)}
-                            >
+                            <Button sx={{ textTransform: "none" }} onClick={() => setEdit(true)}>
                                 Edit
                             </Button>
                             <Button

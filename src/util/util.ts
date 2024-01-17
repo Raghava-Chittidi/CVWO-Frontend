@@ -16,20 +16,21 @@ export const formatDate = (oldDate: string) => {
         "December",
     ];
     const date = new Date(oldDate);
-    const d = date.getDate();
-    const m = months[date.getMonth()];
+    const day = date.getDate();
+    const month = months[date.getMonth()];
 
-    let hr = date.getHours();
-    let min: string | number = date.getMinutes();
-    if (min < 10) {
-        min = "0" + min.toString();
-    }
+    let hour = date.getHours();
+    let minute: string | number = date.getMinutes();
     let ampm = "AM";
-    if (hr > 12) {
-        hr -= 12;
+    if (minute < 10) {
+        minute = `0${minute}`;
+    }
+
+    if (hour > 12) {
+        hour -= 12;
         ampm = "PM";
     }
-    return `${m} ${d} at ${hr}:${min} ${ampm}`;
+    return `${month} ${day} at ${hour}:${minute} ${ampm}`;
 };
 
 export const usernameToColour = (str: string) => {
@@ -41,9 +42,10 @@ export const usernameToColour = (str: string) => {
     return `hsl(${hash % 360}, 100%, 70%)`;
 };
 
+// Get time since post in terms of days or weeks
 export const timeSincePost = (postedDate: string) => {
-    const d = new Date(postedDate);
-    const posted = moment(d, "DD-MM-YYYY");
+    const date = new Date(postedDate);
+    const posted = moment(date, "DD-MM-YYYY");
     const cur = moment(new Date(), "DD-MM-YYYY");
     const weeks = cur.diff(posted, "week");
     if (weeks === 0) {

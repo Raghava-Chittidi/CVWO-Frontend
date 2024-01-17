@@ -14,9 +14,9 @@ type EditThreadProps = {
 };
 
 const EditThread = () => {
+    const { threadId } = useParams();
     const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
     const authInfo = useSelector((state: selectorStateType) => state.auth);
-    const { threadId } = useParams();
     const { error: err, data: thread } = useFetchData(`/threads/${threadId}`);
     const { categories, setThreads } = useOutletContext<EditThreadProps>();
     const allCategories = ["General", ...categories.filter((category: string) => category !== "General")];
@@ -33,12 +33,14 @@ const EditThread = () => {
     }, [isLoggedIn]);
 
     useEffect(() => {
+        // If thread id does not exist
         if (err) {
             navigate("/threads");
             toast.error("Thread not found!");
         }
     }, [err]);
 
+    // If user id is not equal to thread's author id, redirect
     if (loading || !thread || thread.user.username !== authInfo.userData?.username) {
         if (thread && thread.user.username !== authInfo.userData?.username) {
             navigate("/threads");
@@ -46,7 +48,7 @@ const EditThread = () => {
         return <LoadingSpinner height="100%" />;
     }
 
-    const submitHandler = async (category: string, title: string, content: string, imageUrl?: string) => {
+    const editThreadHandler = async (category: string, title: string, content: string, imageUrl?: string) => {
         try {
             setLoading(true);
             const res = await axios.patch(
@@ -66,6 +68,8 @@ const EditThread = () => {
             );
 
             console.log(res.data);
+
+            // Update thread item list
             setThreads((prevState: ThreadType[]) => {
                 const curThreadIndex = prevState.findIndex((originalThread) => thread.ID === originalThread.ID);
                 prevState[curThreadIndex] = res.data.data;
@@ -77,14 +81,19 @@ const EditThread = () => {
             navigate(`/threads/${res.data.data.ID}`);
         } catch (err) {
             setLoading(false);
-            // toast.error(err.message);
             setError(err.response.data.message);
             console.log(error);
         }
     };
 
     return (
-        <ThreadSkeleton edit thread={thread} categories={allCategories} submitHandler={submitHandler} error={error} />
+        <ThreadSkeleton
+            edit
+            thread={thread}
+            categories={allCategories}
+            submitHandler={editThreadHandler}
+            error={error}
+        />
     );
 };
 

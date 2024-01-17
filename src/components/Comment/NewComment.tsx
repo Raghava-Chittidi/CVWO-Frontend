@@ -19,7 +19,7 @@ const NewComment = (props: NewCommentProps) => {
     const authInfo = useSelector((state: selectorStateType) => state.auth);
     const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
 
-    const submitHandler = async (event: React.FormEvent) => {
+    const createCommentHandler = async (event: React.FormEvent) => {
         event.preventDefault();
         setNewCommentState(false);
         setLoading(true);
@@ -67,7 +67,7 @@ const NewComment = (props: NewCommentProps) => {
         );
     }
 
-    return <CommentBox submitHandler={submitHandler} setDisplay={setNewCommentState} setComment={setComment} />;
+    return <CommentBox submitHandler={createCommentHandler} setDisplay={setNewCommentState} setComment={setComment} />;
 };
 
 export default NewComment;

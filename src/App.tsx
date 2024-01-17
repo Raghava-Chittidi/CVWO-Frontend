@@ -52,23 +52,7 @@ const router = createBrowserRouter([
     },
 ]);
 
-{
-    /* <BrowserRouter>
-    <Routes>
-        <Route path="/">
-            <Route path="/login" element={<Auth />} />
-            <Route path="/threads" loader={useFetchData("/categories").data} element={<Layout />}>
-                <Route path="/threads" element={<Home />} />
-                <Route path="/threads/create" element={<NewThread />} />
-                <Route path="/threads/:threadId" element={<Thread />} />
-            </Route>
-            <Route path="*" element={<Redirect />} />
-        </Route>
-    </Routes>
-</BrowserRouter>; */
-}
-
-const App: React.FC = () => {
+const App = () => {
     return (
         <div className="App" style={{ width: "100vw", maxHeight: "100vh", overflow: "hidden" }}>
             <Provider store={store}>

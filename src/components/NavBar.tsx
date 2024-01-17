@@ -1,5 +1,6 @@
 import { selectorStateType } from "../types/types";
 import { authActions } from "../store";
+import { usernameToColour } from "../util/util";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -20,7 +21,8 @@ const settings = ["Profile", "Logout"];
 
 const NavBar = React.memo(function navBar() {
     const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
-    const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+    const username = useSelector((state: selectorStateType) => state.auth.userData?.username);
+    const [anchorElUser, setAnchorElUser] = useState<HTMLElement | null>(null);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -47,14 +49,13 @@ const NavBar = React.memo(function navBar() {
         <AppBar
             position="static"
             sx={{
-                // backgroundColor: "#0471A6",
-                // backgroundColor: "#50288C",
                 backgroundColor: "#4169E1",
                 boxShadow: "none",
+                width: "100%",
             }}
         >
-            <Container maxWidth="xl">
-                <Toolbar disableGutters sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Container sx={{ width: "100%", m: 0, minWidth: "100vw" }}>
+                <Toolbar disableGutters sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                         <Box
                             onClick={() => navigate("/threads")}
@@ -66,12 +67,8 @@ const NavBar = React.memo(function navBar() {
                                 component="a"
                                 sx={{
                                     mr: 3,
-                                    // display: { xs: "none", md: "flex" },
-                                    // fontFamily: "monospace",
                                     fontWeight: 700,
                                     fontSize: "1.4rem",
-                                    // letterSpacing: ".3rem",
-                                    // color: "#00d5fa",
                                     textDecoration: "none",
                                 }}
                             >
@@ -95,7 +92,13 @@ const NavBar = React.memo(function navBar() {
                         {isLoggedIn ? (
                             <>
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                    <Avatar
+                                        sx={{
+                                            bgcolor: usernameToColour(username!),
+                                        }}
+                                    >
+                                        {username![0].toUpperCase()}
+                                    </Avatar>
                                 </IconButton>
                                 <Menu
                                     sx={{ mt: "45px" }}

@@ -19,8 +19,6 @@ const ThreadItem = (props: threadItemProps) => {
     const id = useLocation().pathname.split("/")[2];
 
     const authInfo = useSelector((state: selectorStateType) => state.auth);
-    // const initialFavouriteBooleanValue = likeObj?.favourited;
-    // const initialLikeBooleanValue = likeObj?.liked;
 
     return (
         <Box

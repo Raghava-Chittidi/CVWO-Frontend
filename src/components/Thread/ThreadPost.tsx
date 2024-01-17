@@ -26,6 +26,8 @@ const ThreadPost = (props: ThreadPostProps) => {
     const authInfo = useSelector((state: selectorStateType) => state.auth);
     const likeObjs = useSelector((state: selectorStateType) => state.like);
     const likeObj = likeObjs.find((likeObj) => likeObj.id === props.thread.ID)!;
+    const initialLikeBooleanValue = likeObj?.liked;
+    const initialLikes = props.thread.likes.length;
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -36,9 +38,6 @@ const ThreadPost = (props: ThreadPostProps) => {
     if (loading) {
         return <LoadingSpinner />;
     }
-
-    const initialLikeBooleanValue = likeObj.liked;
-    const initialLikes = props.thread.likes.length;
 
     const likeThreadHandler = async () => {
         dispatch(likeActions.setValue({ id: props.thread.ID, liked: true, favourited: likeObj.favourited }));
@@ -123,8 +122,6 @@ const ThreadPost = (props: ThreadPostProps) => {
                     {authInfo.userData?.username === props.thread.user.username && (
                         <Box sx={{ display: "flex" }}>
                             <Button
-                                // variant="text"
-                                // color="info"
                                 sx={{ textTransform: "none" }}
                                 onClick={() => navigate(`/threads/edit/${props.thread.ID}`)}
                             >

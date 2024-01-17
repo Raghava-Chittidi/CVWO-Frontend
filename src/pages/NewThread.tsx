@@ -35,7 +35,7 @@ const NewThread = () => {
         return <LoadingSpinner />;
     }
 
-    const submitHandler = async (category: string, title: string, content: string, imageUrl?: string) => {
+    const createThreadHandler = async (category: string, title: string, content: string, imageUrl?: string) => {
         try {
             const res = await axios.post(
                 `${process.env.REACT_APP_DOMAIN_URL}/create/thread`,
@@ -54,6 +54,8 @@ const NewThread = () => {
             );
 
             console.log(res.data);
+
+            // Update thread item list
             setThreads((prevState) => [res.data.data, ...prevState]);
             dispatch(likeActions.insert({ id: res.data.data.ID }));
             setError(null);
@@ -65,7 +67,7 @@ const NewThread = () => {
         }
     };
 
-    return <ThreadSkeleton categories={allCategories} submitHandler={submitHandler} error={error} />;
+    return <ThreadSkeleton categories={allCategories} submitHandler={createThreadHandler} error={error} />;
 };
 
 export default NewThread;

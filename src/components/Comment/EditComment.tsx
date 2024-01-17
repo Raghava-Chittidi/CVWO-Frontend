@@ -18,7 +18,7 @@ const EditComment = (props: EditCommentProps) => {
     const [loading, setLoading] = useState<boolean>(false);
     const authInfo = useSelector((state: selectorStateType) => state.auth);
 
-    const submitHandler = async (event: React.FormEvent) => {
+    const editCommentHandler = async (event: React.FormEvent) => {
         event.preventDefault();
         setLoading(true);
         try {
@@ -53,7 +53,7 @@ const EditComment = (props: EditCommentProps) => {
             initial={props.comment.content}
             setDisplay={props.setDisplay}
             setComment={setEditedComment}
-            submitHandler={submitHandler}
+            submitHandler={editCommentHandler}
         />
     );
 };

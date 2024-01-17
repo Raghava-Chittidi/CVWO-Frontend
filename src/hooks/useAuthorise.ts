@@ -6,11 +6,12 @@ import axios from "axios";
 
 const useAuthorise = () => {
     const TOKEN_EXPIRY_TIME = 15 * 60 * 1000;
-    const dispatch = useDispatch();
     const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const dispatch = useDispatch();
 
+    // Send request to get new access and refresh tokens
     const sendRequest = async () => {
         try {
             setError(null);
@@ -34,6 +35,7 @@ const useAuthorise = () => {
     };
 
     useEffect(() => {
+        // Auto login user if they have a valid refresh token
         if (!isLoggedIn) {
             sendRequest();
         }
@@ -41,6 +43,7 @@ const useAuthorise = () => {
         // Timer to check when access token expires
         else {
             const i = setInterval(() => {
+                // Get new access token when old one expires
                 sendRequest();
             }, TOKEN_EXPIRY_TIME);
 

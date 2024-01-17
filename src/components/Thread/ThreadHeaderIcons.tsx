@@ -18,7 +18,7 @@ const ThreadHeaderIcons = (props: ThreadHeaderIconsProps) => {
     const authInfo = useSelector((state: selectorStateType) => state.auth);
     const likeObjs = useSelector((state: selectorStateType) => state.like);
     const likeObj = likeObjs.find((likeObj) => likeObj.id === props.thread.ID)!;
-    const initialFavouriteBooleanValue = likeObj.favourited;
+    const initialFavouriteBooleanValue = likeObj?.favourited;
     const [favourited, setFavourited] = useState<boolean>(initialFavouriteBooleanValue);
     const starRef = useRef<LottieRefCurrentProps | null>(null);
     const dispatch = useDispatch();
@@ -40,7 +40,6 @@ const ThreadHeaderIcons = (props: ThreadHeaderIconsProps) => {
                 },
             );
             console.log(res.data);
-            // toast.success(res.data.message);
         } catch (error) {
             console.log(error);
             toast.error(error.message);
@@ -58,7 +57,6 @@ const ThreadHeaderIcons = (props: ThreadHeaderIconsProps) => {
                 },
             );
             console.log(res.data);
-            // toast.success(res.data.message);
         } catch (error) {
             console.log(error);
             toast.error(error.message);

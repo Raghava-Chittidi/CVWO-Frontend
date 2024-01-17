@@ -12,13 +12,13 @@ import { toast } from "react-toastify";
 const defaultTheme = createTheme();
 
 const Thread = () => {
-    const { setThreads } = useOutletContext<{ setThreads: React.Dispatch<React.SetStateAction<ThreadType[]>> }>();
     const { threadId } = useParams();
-    // const thread = threads.find((t) => t.ID === parseInt(threadId!))!;
+    const { setThreads } = useOutletContext<{ setThreads: React.Dispatch<React.SetStateAction<ThreadType[]>> }>();
     const { error, loading, data: thread } = useFetchData(`/threads/${threadId}`);
     const navigate = useNavigate();
 
     useEffect(() => {
+        // If Thread ID doesnt exist
         if (error) {
             navigate("/threads");
             toast.error("Thread not found!");

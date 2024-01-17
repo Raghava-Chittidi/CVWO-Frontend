@@ -20,13 +20,13 @@ import { useNavigate } from "react-router-dom";
 const defaultTheme = createTheme();
 
 const Auth: React.FC = () => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
     const isLoggedIn = useSelector((state: selectorStateType) => state.auth.isLoggedIn);
     const [isLoginState, setIsLoginState] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(true);
     const { loading: loading1 } = useAuthorise();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -36,6 +36,7 @@ const Auth: React.FC = () => {
         }
     }, [isLoggedIn, loading1]);
 
+    // Switch between login and signup state
     const switchAuthStateHandler = () => {
         setIsLoginState((prevState) => !prevState);
         setError("");
